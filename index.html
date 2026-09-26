@@ -1,0 +1,630 @@
+<title>Pits Medical · Resultados de Pauta</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Sora:wght@500;600;700&family=IBM+Plex+Sans:wght@400;500;600&display=swap">
+<style>
+:root{
+  color-scheme: dark;
+  --bg:#110a24; --panel:#1b1336; --panel-2:#221944; --line:rgba(190,170,255,.13); --line-2:rgba(190,170,255,.22);
+  --ink:#f4f1ff; --ink-2:#c3badf; --muted:#9489bb;
+  --mag:#e2458f; --cyan:#1a9bcc; --vio:#8a63f0; --meta:#6c638f;
+  --good:#3ccf83; --warn:#f5b83d; --bad:#ff6474;
+  --display:"Sora", system-ui, -apple-system, "Segoe UI", sans-serif;
+  --body:"IBM Plex Sans", system-ui, -apple-system, "Segoe UI", sans-serif;
+}
+*{box-sizing:border-box}
+body{background:var(--bg);color:var(--ink);font-family:var(--body);font-size:15px;line-height:1.5}
+.wrap{max-width:1240px;margin:0 auto;padding-inline:20px;padding-block:0 64px}
+h1,h2,h3{font-family:var(--display);text-wrap:balance;margin:0;letter-spacing:-.01em}
+p{margin:0}
+.num{font-variant-numeric:tabular-nums}
+
+/* header */
+header.top{position:relative;padding-block:36px 28px;overflow:hidden}
+header.top::before{content:"";position:absolute;inset:-120px -10% auto auto;width:520px;height:420px;background:radial-gradient(closest-side,rgba(226,69,143,.28),transparent 70%);pointer-events:none}
+header.top::after{content:"";position:absolute;inset:-80px auto auto -8%;width:460px;height:380px;background:radial-gradient(closest-side,rgba(26,155,204,.20),transparent 70%);pointer-events:none}
+.brand{display:flex;align-items:center;gap:10px;font-family:var(--display);font-weight:700;letter-spacing:.14em;font-size:13px;color:var(--ink-2);position:relative}
+.brand i{width:10px;height:10px;border-radius:50%;background:linear-gradient(135deg,var(--mag),var(--vio));box-shadow:0 0 12px var(--mag)}
+header.top h1{font-size:clamp(26px,4vw,40px);font-weight:700;margin-top:14px;position:relative}
+header.top h1 span{background:linear-gradient(90deg,#ff7ab8,#b394ff 60%,#5cc8f0);-webkit-background-clip:text;background-clip:text;color:transparent}
+.sub{color:var(--ink-2);margin-top:10px;max-width:70ch;position:relative}
+.meta-row{display:flex;flex-wrap:wrap;gap:8px;margin-top:16px;position:relative}
+.tag{border:1px solid var(--line-2);border-radius:999px;padding:4px 12px;font-size:13px;color:var(--ink-2);background:rgba(27,19,54,.6)}
+
+/* nav */
+nav.jump{position:sticky;top:env(safe-area-inset-top,0px);z-index:10;background:rgba(17,10,36,.88);backdrop-filter:blur(10px);border-bottom:1px solid var(--line);margin-inline:-20px;padding:10px 20px}
+nav.jump .in{display:flex;gap:6px;overflow-x:auto;max-width:1240px;margin:0 auto}
+nav.jump a{flex:none;color:var(--ink-2);text-decoration:none;font-size:14px;font-weight:500;padding:6px 14px;border-radius:999px;border:1px solid transparent}
+nav.jump a:hover,nav.jump a:focus-visible{color:var(--ink);border-color:var(--line-2);outline:none}
+nav.jump a .d{display:inline-block;width:8px;height:8px;border-radius:50%;margin-right:7px;vertical-align:1px}
+
+section.block{padding-top:44px;scroll-margin-top:60px}
+.sec-head{display:flex;flex-wrap:wrap;align-items:flex-end;justify-content:space-between;gap:16px;margin-bottom:18px}
+.sec-head h2{font-size:clamp(22px,2.6vw,28px);font-weight:600;display:flex;align-items:center;gap:12px}
+.sec-head h2 .d{width:12px;height:12px;border-radius:3px}
+.sec-head p{color:var(--ink-2);margin-top:6px;max-width:68ch}
+.eyebrow{font-size:12px;letter-spacing:.12em;text-transform:uppercase;color:var(--muted);font-weight:600;margin-bottom:6px}
+
+/* filters */
+.filter{display:flex;flex-wrap:wrap;align-items:center;gap:10px;background:var(--panel);border:1px solid var(--line);border-radius:14px;padding:10px 12px;margin-bottom:18px}
+.filter .lbl{font-size:13px;color:var(--muted);font-weight:600;margin-right:4px}
+.seg{display:flex;flex-wrap:wrap;gap:4px}
+.seg button{font:inherit;font-size:13px;color:var(--ink-2);background:transparent;border:1px solid var(--line-2);border-radius:999px;padding:5px 12px;cursor:pointer}
+.seg button:hover{color:var(--ink);border-color:var(--muted)}
+.seg button[aria-pressed="true"]{color:#fff;border-color:transparent;background:var(--accent)}
+.seg button:focus-visible,.filter select:focus-visible{outline:2px solid var(--ink);outline-offset:2px}
+.range{display:flex;align-items:center;gap:6px;margin-left:auto;font-size:13px;color:var(--muted)}
+.filter select{font:inherit;font-size:13px;color:var(--ink);background:var(--panel-2);border:1px solid var(--line-2);border-radius:8px;padding:5px 8px}
+.filter .shown{font-size:13px;color:var(--ink-2);width:100%;border-top:1px solid var(--line);padding-top:8px}
+
+/* KPI tiles */
+.kpis{display:grid;grid-template-columns:repeat(auto-fill,minmax(210px,1fr));gap:12px}
+.kpi{background:var(--panel);border:1px solid var(--line);border-radius:14px;padding:16px;display:flex;flex-direction:column;gap:6px}
+.kpi .k{font-size:13px;color:var(--ink-2);font-weight:500}
+.kpi .v{font-family:var(--display);font-size:28px;font-weight:600;line-height:1.1}
+.kpi .m{font-size:12.5px;color:var(--muted);line-height:1.45}
+.chip{align-self:flex-start;display:inline-flex;align-items:center;gap:6px;font-size:12px;font-weight:600;border-radius:999px;padding:3px 10px;border:1px solid}
+.chip.good{color:var(--good);border-color:rgba(60,207,131,.4);background:rgba(60,207,131,.08)}
+.chip.bad{color:var(--bad);border-color:rgba(255,100,116,.4);background:rgba(255,100,116,.08)}
+.chip.warn{color:var(--warn);border-color:rgba(245,184,61,.4);background:rgba(245,184,61,.08)}
+.chip b{font-size:13px}
+
+.alert{display:flex;gap:12px;align-items:flex-start;border:1px solid rgba(255,100,116,.35);background:rgba(255,100,116,.07);border-radius:14px;padding:14px 16px;margin-top:12px}
+.alert.ok{border-color:rgba(60,207,131,.35);background:rgba(60,207,131,.07)}
+.alert .ic{font-family:var(--display);font-weight:700;color:var(--bad);font-size:18px;line-height:1.2}
+.alert.ok .ic{color:var(--good)}
+.alert p{color:var(--ink-2)} .alert strong{color:var(--ink)}
+
+/* charts */
+.grid{display:grid;gap:12px;margin-top:12px}
+.g2{grid-template-columns:repeat(2,minmax(0,1fr))}
+.g3{grid-template-columns:repeat(3,minmax(0,1fr))}
+@media (max-width:860px){.g2,.g3{grid-template-columns:1fr}}
+.card{background:var(--panel);border:1px solid var(--line);border-radius:16px;padding:18px 18px 14px;min-width:0}
+.card h3{font-size:16px;font-weight:600}
+.card .why{font-size:13px;color:var(--muted);margin-top:4px;max-width:70ch}
+.card .take{font-size:13px;color:var(--ink-2);margin-top:10px;border-top:1px solid var(--line);padding-top:10px}
+.card .take b{color:var(--ink)}
+.cv{position:relative;height:280px;margin-top:12px}
+.cv.sm{height:210px}
+.mini-title{font-size:13px;color:var(--ink-2);font-weight:600}
+
+details.tbl{margin-top:12px;background:var(--panel);border:1px solid var(--line);border-radius:14px}
+details.tbl summary{cursor:pointer;padding:12px 16px;font-size:14px;color:var(--ink-2);font-weight:500}
+details.tbl summary:focus-visible{outline:2px solid var(--ink);outline-offset:-2px;border-radius:14px}
+.tscroll{overflow-x:auto;padding:0 12px 12px}
+table{border-collapse:collapse;width:100%;font-size:13px;font-variant-numeric:tabular-nums}
+th,td{padding:7px 10px;text-align:right;border-bottom:1px solid var(--line);white-space:nowrap}
+th{color:var(--muted);font-weight:600;font-size:12px}
+th:first-child,td:first-child{text-align:left}
+tr.zero td{color:var(--bad)}
+tr.off td{color:var(--muted)}
+
+/* summary */
+.hero{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:12px}
+@media (max-width:860px){.hero{grid-template-columns:repeat(2,minmax(0,1fr))}}
+.hero .kpi .v{font-size:32px}
+.key{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px;margin-top:12px}
+@media (max-width:760px){.key{grid-template-columns:1fr}}
+.kf{background:var(--panel);border:1px solid var(--line);border-radius:14px;padding:16px;display:flex;flex-direction:column;gap:8px}
+.kf h3{font-size:15px;font-weight:600}
+.kf p{font-size:14px;color:var(--ink-2)}
+
+/* conclusions */
+.cols{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}
+@media (max-width:760px){.cols{grid-template-columns:1fr}}
+.list{background:var(--panel);border:1px solid var(--line);border-radius:16px;padding:18px}
+.list h3{font-size:17px;font-weight:600;display:flex;align-items:center;gap:10px;margin-bottom:12px}
+.list ul{list-style:none;margin:0;padding:0;display:grid;gap:12px}
+.list li{display:grid;grid-template-columns:24px 1fr;gap:8px;font-size:14px;color:var(--ink-2)}
+.list li b{color:var(--ink);font-weight:600}
+.list li .mk{font-weight:700;font-family:var(--display)}
+.good-t{color:var(--good)} .bad-t{color:var(--bad)} .warn-t{color:var(--warn)}
+.recs{counter-reset:r;display:grid;gap:10px;margin-top:12px}
+.rec{display:grid;grid-template-columns:44px 1fr auto;gap:14px;align-items:start;background:var(--panel);border:1px solid var(--line);border-radius:14px;padding:14px 16px}
+.rec .n{font-family:var(--display);font-weight:700;font-size:20px;color:var(--vio)}
+.rec h4{margin:0;font-size:15px;font-family:var(--display);font-weight:600}
+.rec p{font-size:14px;color:var(--ink-2);margin-top:4px}
+.prio{font-size:12px;font-weight:600;border-radius:999px;padding:3px 10px;border:1px solid var(--line-2);color:var(--ink-2);white-space:nowrap}
+.prio.alta{color:#ff9cc6;border-color:rgba(226,69,143,.5)}
+@media (max-width:600px){.rec{grid-template-columns:32px 1fr}.rec .prio{grid-column:2;justify-self:start}}
+footer{margin-top:40px;color:var(--muted);font-size:12.5px;border-top:1px solid var(--line);padding-top:16px}
+@media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
+
+/* views + navigation buttons */
+html{-webkit-text-size-adjust:100%;text-size-adjust:100%}
+nav.jump{-webkit-backdrop-filter:blur(10px)}
+nav.jump .in{display:flex;align-items:center;gap:10px;overflow:visible}
+nav.jump .links{display:flex;gap:6px;overflow-x:auto;-webkit-overflow-scrolling:touch;scrollbar-width:none;flex:1 1 auto;min-width:0}
+nav.jump .links::-webkit-scrollbar{display:none}
+.btn-go{flex:none;display:inline-flex;align-items:center;justify-content:center;gap:8px;min-height:44px;padding:10px 18px;border:0;border-radius:999px;cursor:pointer;
+  font:600 14px/1.2 var(--display);color:#fff;background:linear-gradient(90deg,var(--mag),var(--vio));box-shadow:0 0 18px rgba(226,69,143,.35);
+  -webkit-tap-highlight-color:transparent;touch-action:manipulation;transition:transform .15s ease, box-shadow .15s ease}
+.btn-go:hover{transform:translateY(-1px);box-shadow:0 0 26px rgba(226,69,143,.5)}
+.btn-go:focus-visible{outline:2px solid var(--ink);outline-offset:3px}
+.btn-go.back{background:var(--panel-2);border:1px solid var(--line-2);box-shadow:none;color:var(--ink)}
+.btn-go.back:hover{border-color:var(--muted);box-shadow:none}
+.switch-card{display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:16px;margin-top:40px;padding:20px;border-radius:16px;
+  border:1px solid var(--line-2);background:linear-gradient(120deg,rgba(226,69,143,.12),rgba(138,99,240,.10) 50%,rgba(26,155,204,.10))}
+.switch-card h3{font-size:18px;font-weight:600}
+.switch-card p{color:var(--ink-2);margin-top:4px;max-width:60ch;font-size:14px}
+section.block{scroll-margin-top:76px}
+@media (max-width:640px){
+  nav.jump .in{flex-wrap:wrap}
+  nav.jump .links{flex-basis:100%;order:2}
+  nav.jump .btn-go{width:100%;order:1}
+  #view-detalle nav.jump .btn-go{order:1}
+  section.block{scroll-margin-top:124px}
+  .filter select{font-size:16px}
+  .range{margin-left:0;flex-wrap:wrap}
+  .switch-card .btn-go{width:100%}
+  .kpi .v,.hero .kpi .v{font-size:24px;overflow-wrap:anywhere}
+  .kpi{padding:14px}
+}
+</style>
+
+<div class="wrap">
+  <header class="top">
+    <div class="brand"><i></i>PITS MEDICAL</div>
+    <h1>Resultados de la publicidad en <span>Facebook e Instagram</span></h1>
+    <p class="sub">Qué pasó con las dos campañas pagadas: la de <b>Ventas</b>, que busca que clientes escriban por mensaje, y la de <b>Reconocimiento</b>, que busca que más personas conozcan la marca a través de un video.</p>
+    <div class="meta-row">
+      <span class="tag">Periodo: 10 al 26 de septiembre de 2026</span>
+      <span class="tag">Valores en pesos colombianos</span>
+      <span class="tag">Fuente: reportes diarios de Meta</span>
+    </div>
+  </header>
+
+  <!-- ================= DASHBOARD 1: VISTA GENERAL ================= -->
+  <div class="view" id="view-general">
+  <nav class="jump" aria-label="Secciones de la vista general">
+    <div class="in">
+      <div class="links">
+        <a href="#resumen"><span class="d" style="background:var(--vio)"></span>Lo más importante</a>
+        <a href="#diagnostico"><span class="d" style="background:var(--bad)"></span>Diagnóstico</a>
+        <a href="#conclusiones"><span class="d" style="background:var(--warn)"></span>Conclusiones y próximos pasos</a>
+        <a href="#recomendaciones"><span class="d" style="background:var(--good)"></span>Recomendaciones</a>
+      </div>
+      <button type="button" class="btn-go" data-go="detalle">Para más detalles de campañas <span aria-hidden="true">→</span></button>
+    </div>
+  </nav>
+
+  <!-- 1. RESUMEN -->
+  <section class="block" id="resumen">
+    <div class="sec-head"><div><div class="eyebrow">Vista general</div><h2>Lo más importante en 30 segundos</h2></div></div>
+    <div class="hero" id="heroKpis"></div>
+    <div class="key">
+      <div class="kf"><span class="chip good"><b>✓</b> Funciona</span><h3>Conseguir que un cliente escriba cuesta poco</h3><p>Cada persona que escribió costó en promedio <b class="num">$6.625</b>. Para equipos médicos, donde una sola venta vale millones, es un costo bajo.</p></div>
+      <div class="kf"><span class="chip good"><b>✓</b> Funciona</span><h3>El video de marca atrapa la atención</h3><p>8 de cada 10 personas se quedaron viendo el video de Reconocimiento. En el anuncio de Ventas solo lo hizo 1 de cada 8.</p></div>
+      <div class="kf"><span class="chip bad"><b>✕</b> Por mejorar</span><h3>Se invirtió dinero en días sin ningún mensaje</h3><p>Hubo 3 días en que se invirtieron <b class="num">$75.471</b> en Ventas y nadie escribió. Eso es el 14 % de lo invertido en esa campaña.</p></div>
+      <div class="kf"><span class="chip bad"><b>✕</b> Por mejorar</span><h3>El video de marca se ve, pero no lleva a nadie al perfil</h3><p>Hubo más de 32 mil videos vistos, pero <b>ninguna</b> visita al perfil de Instagram ni nuevos seguidores.</p></div>
+    </div>
+
+    <div class="grid g2">
+      <div class="card">
+        <h3>Dinero invertido cada día, por campaña</h3>
+        <p class="why">Cada columna es un día. Los colores muestran cuánto fue a cada campaña.</p>
+        <div class="cv"><canvas id="sDaily" role="img" aria-label="Dinero invertido cada día por campaña"></canvas></div>
+        <p class="take">Del 1 al 9 de septiembre no hubo publicidad activa. <b>Ventas se llevó el 72 %</b> del dinero. Reconocimiento tuvo días sin inversión.</p>
+      </div>
+      <div class="card">
+        <h3>¿Cuántos se quedaron viendo los primeros 3 segundos?</h3>
+        <p class="why">Porcentaje de personas que no pasaron de largo el video. Es la primera señal de que el anuncio llama la atención.</p>
+        <div class="cv"><canvas id="sHook" role="img" aria-label="Porcentaje que vio los primeros 3 segundos por campaña frente a la meta"></canvas></div>
+        <p class="take">El video de Reconocimiento supera de lejos la meta del 30 %. <b>El de Ventas se queda en 13 %</b>: el inicio de ese video debe cambiar.</p>
+      </div>
+    </div>
+    <div class="grid g3">
+      <div class="card"><div class="mini-title">Dinero invertido</div><div class="cv sm"><canvas id="sInv" role="img" aria-label="Dinero invertido por campaña"></canvas></div></div>
+      <div class="card"><div class="mini-title">Personas alcanzadas</div><div class="cv sm"><canvas id="sAlc" role="img" aria-label="Personas alcanzadas por campaña"></canvas></div></div>
+      <div class="card"><div class="mini-title">Costo por cada 1.000 veces que se mostró el anuncio</div><div class="cv sm"><canvas id="sCpm" role="img" aria-label="Costo por cada mil veces mostrado por campaña"></canvas></div></div>
+    </div>
+  </section>
+
+  <!-- 2. DIAGNÓSTICO -->
+  <section class="block" id="diagnostico">
+    <div class="sec-head"><div><div class="eyebrow">Vista general</div><h2>Diagnóstico</h2><p>Basado en todo el periodo, del 10 al 26 de septiembre.</p></div></div>
+    <div class="cols">
+      <div class="list">
+        <h3><span class="chip good"><b>✓</b></span>Lo que está funcionando</h3>
+        <ul>
+          <li><span class="mk good-t">✓</span><span><b>Mensajes a bajo costo.</b> $6.625 por persona que escribió. Con cerrar una venta de cada 40 conversaciones, la inversión ya se recupera.</span></li>
+          <li><span class="mk good-t">✓</span><span><b>Mucha gente vio la marca por poco dinero.</b> Casi 50 mil personas vieron el video de Reconocimiento con $199 mil.</span></li>
+          <li><span class="mk good-t">✓</span><span><b>El video de marca atrapa.</b> 79 % se quedó viendo más de 3 segundos, frente a una meta del 30 %.</span></li>
+          <li><span class="mk good-t">✓</span><span><b>El perfil de Instagram genera confianza.</b> 16 de cada 100 personas que lo visitan desde Ventas empiezan a seguir la cuenta. La meta es 10.</span></li>
+        </ul>
+      </div>
+      <div class="list">
+        <h3><span class="chip bad"><b>✕</b></span>Lo que hay que mejorar</h3>
+        <ul>
+          <li><span class="mk bad-t">✕</span><span><b>El inicio del video de Ventas no engancha.</b> Solo 13 % se queda viéndolo, menos de la mitad de la meta.</span></li>
+          <li><span class="mk bad-t">✕</span><span><b>Se pierden clientes entre el clic y el mensaje.</b> De cada 10 personas que tocan el anuncio, solo 2 escriben. La meta es 4.</span></li>
+          <li><span class="mk bad-t">✕</span><span><b>Dinero sin resultado.</b> $75.471 invertidos en 3 días sin ningún mensaje.</span></li>
+          <li><span class="mk bad-t">✕</span><span><b>El video de marca no genera acciones.</b> 0 visitas al perfil y 0 seguidores. Además, cada persona lo vio una sola vez, y eso no basta para recordar una marca.</span></li>
+        </ul>
+      </div>
+    </div>
+  </section>
+
+  <!-- 3. CONCLUSIONES -->
+  <section class="block" id="conclusiones">
+    <div class="sec-head"><div><div class="eyebrow">Vista general</div><h2>Conclusiones y próximos pasos</h2></div></div>
+    <div class="alert"><span class="ic">!</span><p><strong>El dato que falta: las ventas reales.</strong> Los reportes muestran cuántas personas escribieron, pero no cuántas compraron ni por cuánto. Sin ese dato no se puede saber cuánto dinero devuelve cada peso invertido. Por eso la primera recomendación es empezar a registrarlo.</p></div>
+  </section>
+
+  <!-- 4. RECOMENDACIONES -->
+  <section class="block" id="recomendaciones">
+    <div class="sec-head"><div><div class="eyebrow">Vista general</div><h2>Recomendaciones, en orden de prioridad</h2></div></div>
+    <div class="recs">
+      <div class="rec"><span class="n">1</span><div><h4>Registrar qué pasa con cada persona que escribe</h4><p>Usar etiquetas en WhatsApp Business (nuevo, interesado, cotizado, vendido) y una hoja de Google Sheets con el valor de cada venta. Así se sabrá cuánto cuesta conseguir un cliente real.</p></div><span class="prio alta">Prioridad alta</span></div>
+      <div class="rec"><span class="n">2</span><div><h4>Cambiar los primeros 3 segundos del video de Ventas</h4><p>Empezar con el problema del cliente, por ejemplo: "¿Tu consultorio está listo para la auditoría de habilitación?". Probar 3 o 4 inicios distintos y quedarse con el que retenga más del 25 %.</p></div><span class="prio alta">Prioridad alta</span></div>
+      <div class="rec"><span class="n">3</span><div><h4>Facilitar que quien toca el anuncio termine escribiendo</h4><p>Dejar un mensaje escrito por defecto, poner preguntas rápidas de inicio y responder de inmediato, idealmente con una respuesta automática de bienvenida.</p></div><span class="prio alta">Prioridad alta</span></div>
+      <div class="rec"><span class="n">4</span><div><h4>Mantener un presupuesto diario estable</h4><p>Invertir un monto fijo, entre $30.000 y $35.000 al día, y subirlo poco a poco, no más de 20 % cada 3 o 4 días. Pausar automáticamente un anuncio que gaste mucho sin recibir mensajes.</p></div><span class="prio">Prioridad media</span></div>
+      <div class="rec"><span class="n">5</span><div><h4>Unir las dos campañas</h4><p>Mostrar el anuncio de Ventas a las personas que ya vieron la mitad del video de marca (unas 12 mil). Ya conocen a Pits Medical y es más probable que escriban.</p></div><span class="prio">Prioridad media</span></div>
+      <div class="rec"><span class="n">6</span><div><h4>Darle un nuevo enfoque a Reconocimiento</h4><p>Que cada persona vea el video 2 o 3 veces por semana, enfocado en optómetras, IPS y consultorios, y cerrar el video con una invitación clara a visitar el perfil.</p></div><span class="prio">Prioridad media</span></div>
+      <div class="rec"><span class="n">7</span><div><h4>Revisar dónde se mostró el anuncio el 25 de septiembre</h4><p>Ese día llegó a muchas más personas por menos dinero, pero casi nadie tocó el anuncio. Puede haberse mostrado en sitios de poca calidad que conviene excluir.</p></div><span class="prio">Prioridad baja</span></div>
+    </div>
+  </section>
+
+  <div class="switch-card">
+    <div><h3>¿Quieres ver cada campaña día a día?</h3><p>Consulta el detalle de la Campaña de Ventas y de la Campaña de Reconocimiento, con filtros por periodo.</p></div>
+    <button type="button" class="btn-go" data-go="detalle">Para más detalles de campañas <span aria-hidden="true">→</span></button>
+  </div>
+    <footer>
+      Notas: las personas alcanzadas son la suma de cada día, así que una misma persona puede contarse en varios días. Los clics son aproximados, calculados a partir del porcentaje de clics que da el reporte. Las metas de referencia son las que vienen en el propio reporte. "Videos vistos" cuenta a quienes vieron el video completo o al menos 15 segundos.
+    </footer>
+  </div>
+
+  <!-- ================= DASHBOARD 2: DETALLE DE CAMPAÑAS ================= -->
+  <div class="view" id="view-detalle" hidden>
+  <nav class="jump" aria-label="Secciones del detalle de campañas">
+    <div class="in">
+      <button type="button" class="btn-go back" data-go="general"><span aria-hidden="true">←</span> Volver a la vista general</button>
+      <div class="links">
+        <a href="#ventas"><span class="d" style="background:var(--mag)"></span>Campaña 1: Ventas</a>
+        <a href="#reconocimiento"><span class="d" style="background:var(--cyan)"></span>Campaña 2: Reconocimiento</a>
+      </div>
+    </div>
+  </nav>
+  <!-- VENTAS -->
+  <section class="block" id="ventas" style="--accent:var(--mag)">
+    <div class="sec-head"><div><div class="eyebrow">Campaña 1</div><h2><span class="d" style="background:var(--mag)"></span>Campaña de Ventas</h2><p>Su objetivo es que clientes potenciales escriban un mensaje para pedir información o una cotización.</p></div></div>
+    <div class="filter" id="vFilter"></div>
+    <div class="kpis" id="vKpis"></div>
+    <div id="vAlert"></div>
+
+    <div class="grid g2">
+      <div class="card">
+        <h3>Dinero invertido cada día</h3>
+        <p class="why">Las columnas rojas son días en que se invirtió dinero y nadie escribió. La línea es el promedio diario.</p>
+        <div class="cv"><canvas id="vInv" role="img" aria-label="Dinero invertido cada día en la campaña de ventas"></canvas></div>
+      </div>
+      <div class="card">
+        <h3>Personas que escribieron frente a personas que hicieron clic</h3>
+        <p class="why">Las columnas son las personas que escribieron cada día. La línea son las que tocaron el anuncio (valor aproximado).</p>
+        <div class="cv"><canvas id="vRes" role="img" aria-label="Personas que escribieron y clics por día"></canvas></div>
+      </div>
+    </div>
+    <div class="grid g2">
+      <div class="card">
+        <h3>Costo por cada persona que escribió, día a día</h3>
+        <p class="why">Qué tan caro salió cada mensaje según el día. Las ✕ marcan días sin mensajes. La línea es el costo promedio del periodo elegido.</p>
+        <div class="cv"><canvas id="vCpr" role="img" aria-label="Costo por persona que escribió por día"></canvas></div>
+        <p class="take">El costo cambia mucho de un día a otro, desde $1.324 hasta $16.006. Esto ocurre porque el dinero diario también sube y baja mucho.</p>
+      </div>
+      <div class="card">
+        <h3>Resultado frente a la meta</h3>
+        <p class="why">Cada par de columnas compara lo que se logró con la meta de referencia del reporte.</p>
+        <div class="cv"><canvas id="vGoal" role="img" aria-label="Indicadores de ventas frente a su meta"></canvas></div>
+        <p class="take">El perfil de Instagram sí convence a quien lo visita. <b>Lo que falla es el inicio del video y el paso de clic a mensaje.</b></p>
+      </div>
+    </div>
+    <div class="card" style="margin-top:12px">
+      <h3>Dinero invertido y personas que escribieron, día a día (1 al 25 de septiembre)</h3>
+      <p class="why">Las columnas muestran el dinero invertido cada día, separado por campaña (escala en pesos, a la izquierda). La línea blanca muestra cuántas personas escribieron ese día (escala a la derecha). Esta gráfica siempre muestra el mes completo y no cambia con el filtro.</p>
+      <div class="cv" style="height:360px"><canvas id="vMonth" role="img" aria-label="Dinero invertido diario y personas que escribieron del 1 al 25 de septiembre"></canvas></div>
+      <p class="take">Del 1 al 9 de septiembre no hubo inversión ni mensajes. <b>Invertir más en un día no garantiza más mensajes:</b> el 16 de septiembre se invirtieron $72.217 y escribieron 6 personas. El 22, con $79.472, escribieron 12. El 17 se invirtieron $50.563 y no escribió nadie.</p>
+    </div>
+    <div class="card" style="margin-top:12px">
+      <h3>El recorrido de las personas, desde que ven el anuncio hasta que escriben</h3>
+      <p class="why">Cuántas personas quedan en cada paso. Pasa el cursor sobre cada columna para ver qué porcentaje continuó.</p>
+      <div class="cv"><canvas id="vFun" role="img" aria-label="Recorrido desde ver el anuncio hasta escribir"></canvas></div>
+      <p class="take">La mayor pérdida ocurre al principio: <b>casi 9 de cada 10 personas pasan de largo</b> el video en los primeros 3 segundos.</p>
+    </div>
+    <details class="tbl"><summary>Ver los datos día por día</summary><div class="tscroll" id="vTable"></div></details>
+  </section>
+
+  <!-- RECONOCIMIENTO -->
+  <section class="block" id="reconocimiento" style="--accent:var(--cyan)">
+    <div class="sec-head"><div><div class="eyebrow">Campaña 2</div><h2><span class="d" style="background:var(--cyan)"></span>Campaña de Reconocimiento</h2><p>Su objetivo es que la mayor cantidad de personas vea el video de la marca y empiece a recordar a Pits Medical.</p></div></div>
+    <div class="filter" id="rFilter"></div>
+    <div class="kpis" id="rKpis"></div>
+
+    <div class="grid g2">
+      <div class="card">
+        <h3>Personas alcanzadas y videos vistos cada día</h3>
+        <p class="why">Las columnas son las personas que vieron el anuncio. La línea son los videos vistos completos o al menos 15 segundos. Los días en cero no hubo inversión.</p>
+        <div class="cv"><canvas id="rAlcC" role="img" aria-label="Personas alcanzadas y videos vistos por día"></canvas></div>
+      </div>
+      <div class="card">
+        <h3>Costo por cada video visto, día a día</h3>
+        <p class="why">Cuánto costó cada video visto según el día. La línea es el promedio del periodo elegido.</p>
+        <div class="cv"><canvas id="rCpv" role="img" aria-label="Costo por video visto por día"></canvas></div>
+        <p class="take">Es un costo muy estable y muy bajo. Por menos de $7 alguien ve el video.</p>
+      </div>
+    </div>
+    <div class="grid g2">
+      <div class="card">
+        <h3>¿Hasta dónde vieron el video?</h3>
+        <p class="why">Cuántas personas llegaron a cada punto del video.</p>
+        <div class="cv"><canvas id="rFun" role="img" aria-label="Hasta dónde vieron el video"></canvas></div>
+        <p class="take">Casi todos ven el comienzo, pero <b>solo 1 de cada 4</b> de quienes llegan a la mitad lo termina. Conviene poner el nombre de la marca y el mensaje clave en los primeros segundos.</p>
+      </div>
+      <div class="card">
+        <h3>¿Qué hicieron después de ver el video?</h3>
+        <p class="why">Acciones que muestran interés real en la marca.</p>
+        <div class="cv"><canvas id="rAct" role="img" aria-label="Acciones después de ver el video"></canvas></div>
+        <p class="take"><b>Nadie visitó el perfil ni empezó a seguir la cuenta.</b> El video se consume, pero no invita a dar el siguiente paso.</p>
+      </div>
+    </div>
+    <details class="tbl"><summary>Ver los datos día por día</summary><div class="tscroll" id="rTable"></div></details>
+  </section>
+
+  <div class="switch-card">
+    <div><h3>Volver al resumen</h3><p>Regresa a lo más importante, el diagnóstico, las conclusiones y las recomendaciones.</p></div>
+    <button type="button" class="btn-go back" data-go="general"><span aria-hidden="true">←</span> Volver a la vista general</button>
+  </div>
+    <footer>
+      Notas: las personas alcanzadas son la suma de cada día, así que una misma persona puede contarse en varios días. Los clics son aproximados, calculados a partir del porcentaje de clics que da el reporte. Las metas de referencia son las que vienen en el propio reporte. "Videos vistos" cuenta a quienes vieron el video completo o al menos 15 segundos.
+    </footer>
+  </div>
+</div>
+
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.js"></script>
+<script>
+(function(){
+const RAW={"v":[["10",8142,1128,1240,5,13,166,39,21,10,8,6,3,1],["11",52516,6065,7512,14,60,794,263,174,113,70,56,13,1],["12",16006,1389,1779,1,6,334,97,45,36,24,20,4,3],["13",2648,244,268,2,2,62,16,10,11,5,3,1,0],["14",39730,1650,2507,8,22,415,139,82,63,39,29,6,1],["15",2973,245,294,0,4,12,2,2,2,2,2,0,0],["16",51309,2608,4405,6,25,582,186,110,74,48,37,6,2],["17",41367,4076,5303,0,15,591,176,104,81,50,39,3,0],["18",40319,2820,3899,3,21,512,143,74,56,34,29,9,1],["19",26171,2123,2689,6,32,426,110,51,40,24,17,7,0],["20",31259,2407,2899,2,20,450,130,69,46,26,20,1,0],["21",43809,2170,2817,6,24,471,146,78,56,31,20,9,0],["22",51856,2957,3923,12,29,600,179,77,62,39,29,5,1],["23",31313,2176,2842,6,17,420,116,61,46,29,22,5,2],["24",31131,1814,2490,0,7,378,85,42,33,22,20,2,0],["25",44166,10075,11110,6,50,1142,312,75,60,39,30,3,0],["26",8650,550,633,2,1,118,29,12,7,7,5,0,0]],"r":[["10",15097,2390,2521,1641,0,1960,1641,551,194,160,151,0,0],["11",26472,5953,6015,4199,0,4933,4199,1806,650,547,524,0,0],["12",19230,4194,4355,3233,0,3706,3233,1039,388,318,307,0,0],["13",27654,7382,7782,4696,0,6116,4696,1571,665,425,393,0,0],["14",15244,4203,4298,2652,0,3391,2652,1131,435,292,265,0,0],["15",22386,6122,6122,4219,0,5031,4219,1274,533,425,405,0,0],["16",20908,5590,5590,3629,0,4446,3629,1290,441,332,319,0,0],["17",9196,2310,2332,1588,0,1921,1588,563,247,186,175,0,0],["18",0,0,0,0,0,0,0,0,0,0,0,0,0],["19",0,0,0,0,0,0,0,0,0,0,0,0,0],["20",1300,477,477,171,0,225,171,69,23,17,15,0,0],["21",14137,4500,4500,2224,0,2986,2224,1067,377,299,283,0,0],["22",27616,6490,6637,4236,2,5297,4236,2080,585,428,401,0,0],["23",0,0,0,0,0,0,0,0,0,0,0,0,0],["24",0,0,0,0,0,0,0,0,0,0,0,0,0],["25",0,0,0,0,0,0,0,0,0,0,0,0,0],["26",0,0,0,0,0,0,0,0,0,0,0,0,0]]};
+const toObj=r=>({d:+r[0],inv:r[1],alc:r[2],imp:r[3],res:r[4],clk:r[5],h3:r[6],body:r[7],p50:r[8],p75:r[9],p95:r[10],p100:r[11],vis:r[12],seg:r[13]});
+const V=RAW.v.map(toObj), R=RAW.r.map(toObj);
+const WEEKS=[{k:'w1',name:'Semana 1',lab:'10–13 sep',from:10,to:13},{k:'w2',name:'Semana 2',lab:'14–20 sep',from:14,to:20},{k:'w3',name:'Semana 3',lab:'21–26 sep',from:21,to:26}];
+
+const css=n=>getComputedStyle(document.documentElement).getPropertyValue(n).trim();
+const C={mag:css('--mag'),cyan:css('--cyan'),vio:css('--vio'),meta:css('--meta'),bad:css('--bad'),ink:css('--ink'),ink2:css('--ink-2'),muted:css('--muted'),panel:css('--panel')};
+const nf=new Intl.NumberFormat('es-CO',{maximumFractionDigits:0});
+const nf1=new Intl.NumberFormat('es-CO',{minimumFractionDigits:1,maximumFractionDigits:1});
+const nf2=new Intl.NumberFormat('es-CO',{minimumFractionDigits:2,maximumFractionDigits:2});
+const $=v=>'$'+nf.format(Math.round(v));
+const pct=(v,d=1)=>(d===2?nf2:nf1).format(v*100)+' %';
+const sum=(rows,k)=>rows.reduce((a,r)=>a+r[k],0);
+const dlab=d=>d+' sep';
+const hasChart=typeof Chart!=='undefined';
+
+if(hasChart){
+  Chart.defaults.font.family='"IBM Plex Sans", system-ui, sans-serif';
+  Chart.defaults.font.size=12;
+  Chart.defaults.color=C.muted;
+  Chart.defaults.borderColor='rgba(190,170,255,.09)';
+  Chart.defaults.maintainAspectRatio=false;
+  Chart.defaults.animation.duration=500;
+  Object.assign(Chart.defaults.plugins.tooltip,{backgroundColor:'#2a2053',borderColor:'rgba(190,170,255,.3)',borderWidth:1,titleColor:C.ink,bodyColor:C.ink2,padding:10,cornerRadius:8,boxPadding:4,usePointStyle:true});
+  Object.assign(Chart.defaults.plugins.legend.labels,{usePointStyle:true,pointStyle:'rectRounded',boxWidth:10,boxHeight:10,color:C.ink2,padding:14});
+  Chart.defaults.plugins.legend.position='top';
+  Chart.defaults.plugins.legend.align='start';
+  // value labels + zero markers
+  Chart.register({id:'vlabels',afterDatasetsDraw(ch,args,opt){
+    const ctx=ch.ctx;
+    if(opt&&opt.fmt){
+      ch.data.datasets.forEach((ds,i)=>{
+        if(ds.type==='line'||ds.noLabel) return;
+        const meta=ch.getDatasetMeta(i); if(meta.hidden) return;
+        meta.data.forEach((el,j)=>{const v=ds.data[j]; if(v==null) return;
+          ctx.save();ctx.fillStyle=C.ink;ctx.font='600 12px "IBM Plex Sans", system-ui';ctx.textAlign='center';ctx.textBaseline='bottom';
+          ctx.fillText(opt.fmt(v,j,i),el.x,el.y-5);ctx.restore();});
+      });
+    }
+    if(opt&&opt.lineLabels){
+      ch.data.datasets.forEach((ds,i)=>{ if(ds.type!=='line') return; const meta=ch.getDatasetMeta(i); if(meta.hidden) return;
+        meta.data.forEach((el,j)=>{const v=ds.data[j]; if(!v) return;
+          const t=String(v); ctx.save(); ctx.font='700 12px "IBM Plex Sans", system-ui';
+          const w=ctx.measureText(t).width+10, h=18, x=el.x-w/2, y=el.y-h-8;
+          ctx.fillStyle='#2a2053'; ctx.strokeStyle='rgba(244,241,255,.55)'; ctx.lineWidth=1;
+          ctx.beginPath(); if(ctx.roundRect){ctx.roundRect(x,y,w,h,6)}else{ctx.rect(x,y,w,h)} ctx.fill(); ctx.stroke();
+          ctx.fillStyle=C.ink; ctx.textAlign='center'; ctx.textBaseline='middle'; ctx.fillText(t,el.x,y+h/2+.5); ctx.restore();});
+      });
+    }
+    if(opt&&opt.zeros){
+      const xs=ch.scales.x, ys=ch.scales.y;
+      opt.zeros.forEach(j=>{const x=xs.getPixelForValue(j), y=ys.getPixelForValue(0)-10;
+        ctx.save();ctx.strokeStyle=opt.zeroColor||C.bad;ctx.lineWidth=2;ctx.beginPath();ctx.moveTo(x-5,y-5);ctx.lineTo(x+5,y+5);ctx.moveTo(x+5,y-5);ctx.lineTo(x-5,y+5);ctx.stroke();ctx.restore();});
+    }
+    if(opt&&opt.offText){
+      const xs=ch.scales.x, ys=ch.scales.y;
+      opt.offText.forEach(j=>{const x=xs.getPixelForValue(j), y=ys.getPixelForValue(0)-8;
+        ctx.save();ctx.translate(x,y);ctx.rotate(-Math.PI/2);ctx.fillStyle=C.muted;ctx.font='500 11px "IBM Plex Sans", system-ui';ctx.textAlign='left';ctx.textBaseline='middle';ctx.fillText('Pausada',0,0);ctx.restore();});
+    }
+  }});
+}
+const charts={};
+function mk(id,cfg){ if(!hasChart) return; if(charts[id]) charts[id].destroy(); const el=document.getElementById(id); if(el) charts[id]=new Chart(el,cfg); }
+const bar=(label,data,color,extra={})=>Object.assign({type:'bar',label,data,backgroundColor:color,borderRadius:{topLeft:4,topRight:4},borderSkipped:'bottom',maxBarThickness:46,categoryPercentage:.78,barPercentage:.9},extra);
+const line=(label,data,color,extra={})=>Object.assign({type:'line',label,data,borderColor:color,backgroundColor:color,borderWidth:2,pointRadius:3,pointHoverRadius:6,pointBackgroundColor:color,tension:.3,spanGaps:true},extra);
+const yMoney={beginAtZero:true,ticks:{callback:v=>'$'+nf.format(v)},grid:{color:'rgba(190,170,255,.08)'},border:{display:false}};
+const yNum={beginAtZero:true,ticks:{callback:v=>nf.format(v),precision:0},grid:{color:'rgba(190,170,255,.08)'},border:{display:false}};
+const yPct={beginAtZero:true,ticks:{callback:v=>v+' %'},grid:{color:'rgba(190,170,255,.08)'},border:{display:false}};
+const xCat={grid:{display:false},border:{color:'rgba(190,170,255,.25)'},ticks:{maxRotation:0,autoSkip:true}};
+
+/* ---------- KPI tile ---------- */
+function tile(k,v,m,chip){return `<div class="kpi"><div class="k">${k}</div><div class="v num">${v}</div><div class="m">${m}</div>${chip?`<span class="chip ${chip[0]}"><b>${chip[0]==='good'?'✓':chip[0]==='bad'?'✕':'!'}</b>${chip[1]}</span>`:''}</div>`;}
+
+/* ---------- RESUMEN ---------- */
+(function(){
+  const vi=sum(V,'inv'), ri=sum(R,'inv');
+  document.getElementById('heroKpis').innerHTML=
+    tile('Dinero invertido en total',$(vi+ri),`Ventas ${$(vi)} · Reconocimiento ${$(ri)}`)+
+    tile('Personas que escribieron',nf.format(sum(V,'res')),'Clientes potenciales que iniciaron una conversación por mensaje.')+
+    tile('Personas alcanzadas',nf.format(sum(V,'alc')+sum(R,'alc')),'Personas que vieron algún anuncio, sumando ambas campañas y todos los días.')+
+    tile('Videos vistos de la marca',nf.format(sum(R,'body')),'Veces que alguien vio el video de Reconocimiento completo o al menos 15 segundos.');
+  const labels=V.map(r=>dlab(r.d));
+  mk('sDaily',{data:{labels,datasets:[bar('Ventas',V.map(r=>r.inv),C.mag,{stack:'s',borderRadius:0}),bar('Reconocimiento',R.map(r=>r.inv),C.cyan,{stack:'s',borderRadius:{topLeft:4,topRight:4}})]},
+    options:{scales:{x:{...xCat,stacked:true},y:{...yMoney,stacked:true}},plugins:{tooltip:{mode:'index',intersect:false,callbacks:{label:c=>` ${c.dataset.label}: ${$(c.raw)}`,footer:it=>'Total del día: '+$(it.reduce((a,b)=>a+b.raw,0))}}}}});
+  const hv=sum(V,'h3')/sum(V,'imp')*100, hr=sum(R,'h3')/sum(R,'imp')*100;
+  mk('sHook',{data:{labels:['Ventas','Reconocimiento'],datasets:[bar('Resultado',[hv,hr],[C.mag,C.cyan],{maxBarThickness:90}),line('Meta de referencia (30 %)',[30,30],C.ink2,{borderDash:[6,5],pointRadius:0,pointHoverRadius:0,tension:0})]},
+    options:{scales:{x:xCat,y:{...yPct,max:100}},plugins:{legend:{labels:{filter:i=>i.text!=='Resultado'}},vlabels:{fmt:v=>nf1.format(v)+' %'},tooltip:{callbacks:{label:c=>` ${c.dataset.label}: ${nf1.format(c.raw)} %`}}}}});
+  const two=(id,a,b,fmt)=>mk(id,{data:{labels:['Ventas','Reconocimiento'],datasets:[bar('',[a,b],[C.mag,C.cyan],{maxBarThickness:70})]},options:{layout:{padding:{top:22}},scales:{x:xCat,y:{display:false,beginAtZero:true}},plugins:{legend:{display:false},vlabels:{fmt},tooltip:{callbacks:{label:c=>' '+fmt(c.raw)}}}}});
+  two('sInv',vi,ri,$);
+  two('sAlc',sum(V,'alc'),sum(R,'alc'),v=>nf.format(v));
+  two('sCpm',vi/sum(V,'imp')*1000,ri/sum(R,'imp')*1000,$);
+})();
+
+/* ---------- FILTER ---------- */
+function buildFilter(elId,state,onChange){
+  const el=document.getElementById(elId);
+  const opts=Array.from({length:17},(_,i)=>i+10).map(d=>`<option value="${d}">${d} sep</option>`).join('');
+  el.innerHTML=`<span class="lbl">Ver periodo:</span><div class="seg" role="group" aria-label="Periodo">
+    <button type="button" data-p="all">Todo</button>${WEEKS.map(w=>`<button type="button" data-p="${w.k}">${w.name} · ${w.lab}</button>`).join('')}</div>
+    <div class="range"><label for="${elId}-f">Desde</label><select id="${elId}-f">${opts}</select><label for="${elId}-t">hasta</label><select id="${elId}-t">${opts}</select></div>
+    <div class="shown" aria-live="polite"></div>`;
+  const f=el.querySelector('#'+elId+'-f'), t=el.querySelector('#'+elId+'-t'), shown=el.querySelector('.shown');
+  const sync=()=>{f.value=state.from;t.value=state.to;
+    el.querySelectorAll('.seg button').forEach(b=>{const p=b.dataset.p;const w=WEEKS.find(x=>x.k===p);
+      const on=p==='all'?(state.from===10&&state.to===26):(w&&w.from===state.from&&w.to===state.to);b.setAttribute('aria-pressed',on?'true':'false');});
+    shown.textContent=`Mostrando del ${state.from} al ${state.to} de septiembre de 2026 (${state.to-state.from+1} días). Este filtro solo afecta esta campaña.`;
+    onChange();};
+  el.querySelectorAll('.seg button').forEach(b=>b.addEventListener('click',()=>{const p=b.dataset.p;
+    if(p==='all'){state.from=10;state.to=26}else{const w=WEEKS.find(x=>x.k===p);state.from=w.from;state.to=w.to}sync();}));
+  f.addEventListener('change',()=>{state.from=+f.value;if(state.to<state.from)state.to=state.from;sync();});
+  t.addEventListener('change',()=>{state.to=+t.value;if(state.from>state.to)state.from=state.to;sync();});
+  sync();
+}
+
+/* ---------- VENTAS ---------- */
+const vState={from:10,to:26};
+function renderV(){
+  const rows=V.filter(r=>r.d>=vState.from&&r.d<=vState.to);
+  const inv=sum(rows,'inv'),res=sum(rows,'res'),alc=sum(rows,'alc'),imp=sum(rows,'imp'),clk=sum(rows,'clk'),h3=sum(rows,'h3'),body=sum(rows,'body'),vis=sum(rows,'vis'),seg=sum(rows,'seg');
+  const act=rows.filter(r=>r.inv>0), zeros=act.filter(r=>r.res===0), zInv=sum(zeros,'inv');
+  const c2m=clk?res/clk:0, hk=imp?h3/imp:0, bd=imp?body/imp:0, sv=vis?seg/vis:0;
+  const st=(v,g)=>v>=g?'good':'bad';
+  document.getElementById('vKpis').innerHTML=
+    tile('Dinero invertido',$(inv),'Lo que se pagó a Facebook e Instagram por mostrar los anuncios de esta campaña.')+
+    tile('Personas que escribieron',nf.format(res),'Personas que iniciaron una conversación por mensaje después de ver el anuncio.')+
+    tile('Costo por cada persona que escribió',res?$(inv/res):'—','Lo que costó, en promedio, conseguir que una persona escribiera.')+
+    tile('Personas alcanzadas',nf.format(alc),'Personas distintas que vieron el anuncio, sumando cada día.')+
+    tile('Veces que se mostró el anuncio',nf.format(imp),'Total de veces que el anuncio apareció en pantalla, contando repeticiones.')+
+    tile('Personas que tocaron el anuncio',pct(imp?clk/imp:0,2),`De cada 100 personas que vieron el anuncio, cuántas hicieron clic (unos ${nf.format(clk)} clics).`)+
+    tile('De los que hicieron clic, cuántos escribieron',pct(c2m),'Porcentaje de personas que, después de tocar el anuncio, sí enviaron un mensaje.',[st(c2m,.4),'Meta: 40 %'])+
+    tile('Se quedaron viendo los primeros 3 segundos',pct(hk),'Personas que no pasaron de largo el video. Mide si el inicio llama la atención.',[st(hk,.3),'Meta: 30 %'])+
+    tile('Siguieron viendo el video después del inicio',pct(bd),'Personas que vieron el contenido principal del video y no solo el comienzo.',[st(bd,.15),'Meta: 15 %'])+
+    tile('Visitaron el perfil y empezaron a seguir la cuenta',vis?pct(sv):'—',`${nf.format(vis)} visitas al perfil de Instagram y ${nf.format(seg)} nuevos seguidores.`,vis?[st(sv,.1),'Meta: 10 %']:null);
+  document.getElementById('vAlert').innerHTML=zeros.length
+    ?`<div class="alert"><span class="ic">!</span><p><strong>${zeros.length} ${zeros.length===1?'día':'días'} con dinero invertido y ningún mensaje</strong> (${zeros.map(z=>z.d+' sep').join(', ')}): se invirtieron ${$(zInv)}, el ${nf.format(inv?zInv/inv*100:0)} % de lo invertido en este periodo.</p></div>`
+    :`<div class="alert ok"><span class="ic">✓</span><p><strong>Todos los días con inversión generaron al menos un mensaje</strong> en este periodo.</p></div>`;
+
+  const labels=rows.map(r=>dlab(r.d));
+  const avgInv=act.length?inv/act.length:0;
+  mk('vInv',{data:{labels,datasets:[
+      bar('Dinero invertido',rows.map(r=>r.inv),rows.map(r=>r.inv>0&&r.res===0?C.bad:C.mag)),
+      line('Promedio diario',rows.map(()=>avgInv),C.ink2,{borderDash:[6,5],pointRadius:0,pointHoverRadius:0,tension:0})]},
+    options:{scales:{x:xCat,y:yMoney},plugins:{legend:{labels:{generateLabels:()=>[
+        {text:'Día con mensajes',fillStyle:C.mag,strokeStyle:C.mag,pointStyle:'rectRounded',fontColor:C.ink2},
+        {text:'Día sin mensajes',fillStyle:C.bad,strokeStyle:C.bad,pointStyle:'rectRounded',fontColor:C.ink2},
+        {text:'Promedio diario',fillStyle:C.ink2,strokeStyle:C.ink2,pointStyle:'line',lineDash:[6,5],fontColor:C.ink2}]},onClick:null},
+      tooltip:{mode:'index',intersect:false,callbacks:{label:c=>c.datasetIndex===0?` Invertido: ${$(c.raw)} · Mensajes: ${rows[c.dataIndex].res}`:` Promedio diario: ${$(c.raw)}`}}}}});
+  mk('vRes',{data:{labels,datasets:[bar('Personas que escribieron',rows.map(r=>r.res),C.mag),line('Personas que hicieron clic (aprox.)',rows.map(r=>r.clk),C.vio)]},
+    options:{scales:{x:xCat,y:yNum},plugins:{tooltip:{mode:'index',intersect:false,callbacks:{label:c=>` ${c.dataset.label}: ${nf.format(c.raw)}`}}}}});
+  const cpr=rows.map(r=>r.res?r.inv/r.res:null), avgC=res?inv/res:0;
+  const zi=rows.map((r,i)=>r.inv>0&&r.res===0?i:-1).filter(i=>i>=0);
+  mk('vCpr',{data:{labels,datasets:[bar('Costo por persona que escribió',cpr,C.mag),line('Promedio del periodo',rows.map(()=>avgC),C.ink2,{borderDash:[6,5],pointRadius:0,pointHoverRadius:0,tension:0})]},
+    options:{scales:{x:xCat,y:yMoney},plugins:{vlabels:{zeros:zi},tooltip:{mode:'index',intersect:false,callbacks:{label:c=>c.raw==null?' Sin mensajes ese día':` ${c.dataset.label}: ${$(c.raw)}`}}}}});
+  mk('vGoal',{data:{labels:[['De clic','a mensaje'],['Se quedaron','3 segundos'],['Siguieron','viendo el video'],['De visita al perfil','a seguidor']],
+      datasets:[bar('Resultado',[c2m*100,hk*100,bd*100,sv*100],C.mag),bar('Meta de referencia',[40,30,15,10],C.meta)]},
+    options:{layout:{padding:{top:18}},scales:{x:{...xCat,ticks:{autoSkip:false,maxRotation:0}},y:yPct},plugins:{vlabels:{fmt:v=>nf1.format(v)+' %'},tooltip:{callbacks:{label:c=>` ${c.dataset.label}: ${nf1.format(c.raw)} %`}}}}});
+  // funnel
+  const fv=[imp,h3,sum(rows,'p50'),sum(rows,'p100'),clk,res];
+  const fl=[['Vieron','el anuncio'],['Se quedaron','3 segundos'],['Vieron la mitad','del video'],['Vieron todo','el video'],['Tocaron','el anuncio'],['Escribieron','un mensaje']];
+  mk('vFun',{data:{labels:fl,datasets:[bar('Personas',fv,[C.mag,C.mag,C.mag,C.mag,C.vio,C.vio],{maxBarThickness:80,minBarLength:3})]},
+    options:{layout:{padding:{top:22}},scales:{x:{...xCat,ticks:{autoSkip:false}},y:yNum},plugins:{legend:{display:false},vlabels:{fmt:v=>nf.format(v)},
+      tooltip:{callbacks:{title:it=>fl[it[0].dataIndex].join(' '),label:c=>` ${nf.format(c.raw)} personas`,afterLabel:c=>c.dataIndex?` ${nf1.format(fv[c.dataIndex-1]?c.raw/fv[c.dataIndex-1]*100:0)} % del paso anterior`:` ${nf1.format(100)} %`}}}}});
+  // table
+  document.getElementById('vTable').innerHTML=`<table><thead><tr><th>Día</th><th>Invertido</th><th>Personas alcanzadas</th><th>Veces mostrado</th><th>Clics (aprox.)</th><th>Escribieron</th><th>Costo por mensaje</th></tr></thead><tbody>${
+    rows.map(r=>`<tr class="${r.inv>0&&r.res===0?'zero':''}"><td>${r.d} sep</td><td>${$(r.inv)}</td><td>${nf.format(r.alc)}</td><td>${nf.format(r.imp)}</td><td>${nf.format(r.clk)}</td><td>${r.res}</td><td>${r.res?$(r.inv/r.res):'Sin mensajes'}</td></tr>`).join('')
+  }<tr><td><b>Total</b></td><td><b>${$(inv)}</b></td><td><b>${nf.format(alc)}</b></td><td><b>${nf.format(imp)}</b></td><td><b>${nf.format(clk)}</b></td><td><b>${res}</b></td><td><b>${res?$(inv/res):'—'}</b></td></tr></tbody></table>`;
+}
+
+/* ---------- RECONOCIMIENTO ---------- */
+const rState={from:10,to:26};
+const V_CPM=sum(V,'inv')/sum(V,'imp')*1000;
+function renderR(){
+  const rows=R.filter(r=>r.d>=rState.from&&r.d<=rState.to);
+  const inv=sum(rows,'inv'),alc=sum(rows,'alc'),imp=sum(rows,'imp'),tp=sum(rows,'body'),h3=sum(rows,'h3'),vis=sum(rows,'vis'),seg=sum(rows,'seg'),clk=sum(rows,'clk');
+  const act=rows.filter(r=>r.inv>0), off=rows.filter(r=>r.inv===0);
+  const cpm=imp?inv/imp*1000:0, hk=imp?h3/imp:0, fr=alc?imp/alc:0;
+  const lastOn=act.length?Math.max(...act.map(r=>r.d)):null;
+  document.getElementById('rKpis').innerHTML=
+    tile('Dinero invertido',$(inv),'Lo que se pagó a Facebook e Instagram por mostrar el video de marca.')+
+    tile('Personas alcanzadas',nf.format(alc),'Personas distintas que vieron el video, sumando cada día.')+
+    tile('Veces que se mostró el anuncio',nf.format(imp),'Total de veces que el video apareció en pantalla.')+
+    tile('Videos vistos',nf.format(tp),'Veces que alguien vio el video completo o al menos 15 segundos.')+
+    tile('Costo por cada video visto',tp?'$'+nf2.format(inv/tp):'—','Lo que costó, en promedio, que una persona viera el video.')+
+    tile('Costo por cada 1.000 veces mostrado',imp?$(cpm):'—','Lo que cuesta que el anuncio aparezca mil veces en pantalla.',imp?[cpm<V_CPM?'good':'warn',`Ventas: ${$(V_CPM)}`]:null)+
+    tile('Se quedaron viendo los primeros 3 segundos',imp?pct(hk):'—','Personas que no pasaron de largo el video. Mide si el inicio llama la atención.',imp?[hk>=.3?'good':'bad','Meta: 30 %']:null)+
+    tile('Veces que cada persona vio el video',imp?nf2.format(fr):'—','Promedio de veces que una misma persona vio el anuncio. Para recordar una marca se recomiendan 2 o 3.',imp?[fr>=2?'good':'warn','Recomendado: 2 a 3']:null)+
+    tile('Visitas al perfil y nuevos seguidores',`${nf.format(vis)} / ${nf.format(seg)}`,'Personas que, después del video, fueron a conocer más de la marca en Instagram.',imp?[vis>0?'good':'bad',vis>0?'Hay interés':'Nadie dio el siguiente paso']:null);
+  const labels=rows.map(r=>dlab(r.d));
+  const offIdx=rows.map((r,i)=>r.inv===0?i:-1).filter(i=>i>=0);
+  mk('rAlcC',{data:{labels,datasets:[bar('Personas alcanzadas',rows.map(r=>r.alc),C.cyan),line('Videos vistos',rows.map(r=>r.inv?r.body:null),C.vio,{spanGaps:false})]},
+    options:{scales:{x:xCat,y:yNum},plugins:{tooltip:{mode:'index',intersect:false,callbacks:{label:c=>rows[c.dataIndex].inv===0?' Sin inversión ese día':` ${c.dataset.label}: ${nf.format(c.raw)}`},filter:i=>i.raw!=null&&!(i.datasetIndex===1&&rows[i.dataIndex].inv===0)}}}});
+  const cpv=rows.map(r=>r.body?r.inv/r.body:null), avg=tp?inv/tp:0;
+  mk('rCpv',{data:{labels,datasets:[bar('Costo por video visto',cpv,C.cyan),line('Promedio del periodo',rows.map(()=>avg),C.ink2,{borderDash:[6,5],pointRadius:0,pointHoverRadius:0,tension:0})]},
+    options:{scales:{x:xCat,y:{...yMoney,ticks:{callback:v=>'$'+nf1.format(v)}}},plugins:{tooltip:{mode:'index',intersect:false,callbacks:{label:c=>c.raw==null?' Sin inversión ese día':` ${c.dataset.label}: $${nf2.format(c.raw)}`}}}}});
+  const fv=[imp,h3,sum(rows,'p50'),sum(rows,'p75'),sum(rows,'p95'),sum(rows,'p100')];
+  const fl=[['Vieron','el anuncio'],['Se quedaron','3 segundos'],['Llegaron','a la mitad'],['Llegaron','a 3/4'],['Casi','terminaron'],['Lo vieron','completo']];
+  mk('rFun',{data:{labels:fl,datasets:[bar('Personas',fv,C.cyan,{maxBarThickness:70,minBarLength:3})]},
+    options:{layout:{padding:{top:22}},scales:{x:{...xCat,ticks:{autoSkip:false}},y:yNum},plugins:{legend:{display:false},vlabels:{fmt:v=>nf.format(v)},
+      tooltip:{callbacks:{title:it=>fl[it[0].dataIndex].join(' '),label:c=>` ${nf.format(c.raw)} personas`,afterLabel:c=>c.dataIndex?` ${nf1.format(fv[c.dataIndex-1]?c.raw/fv[c.dataIndex-1]*100:0)} % del paso anterior`:''}}}}});
+  mk('rAct',{data:{labels:[['Videos','vistos'],['Tocaron','el anuncio'],['Visitaron','el perfil'],['Nuevos','seguidores']],datasets:[bar('Personas',[tp,clk,vis,seg],[C.cyan,C.bad,C.bad,C.bad],{maxBarThickness:70,minBarLength:3})]},
+    options:{layout:{padding:{top:22}},scales:{x:{...xCat,ticks:{autoSkip:false}},y:yNum},plugins:{legend:{display:false},vlabels:{fmt:v=>nf.format(v)},tooltip:{callbacks:{label:c=>` ${nf.format(c.raw)}`}}}}});
+  document.getElementById('rTable').innerHTML=`<table><thead><tr><th>Día</th><th>Invertido</th><th>Personas alcanzadas</th><th>Veces mostrado</th><th>Videos vistos</th><th>Costo por video visto</th><th>Vieron completo</th></tr></thead><tbody>${
+    rows.map(r=>`<tr><td>${r.d} sep</td><td>${$(r.inv)}</td><td>${nf.format(r.alc)}</td><td>${nf.format(r.imp)}</td><td>${nf.format(r.body)}</td><td>${r.body?'$'+nf2.format(r.inv/r.body):'—'}</td><td>${nf.format(r.p100)}</td></tr>`).join('')
+  }<tr><td><b>Total</b></td><td><b>${$(inv)}</b></td><td><b>${nf.format(alc)}</b></td><td><b>${nf.format(imp)}</b></td><td><b>${nf.format(tp)}</b></td><td><b>${tp?'$'+nf2.format(inv/tp):'—'}</b></td><td><b>${nf.format(sum(rows,'p100'))}</b></td></tr></tbody></table>`;
+}
+
+
+/* ---------- MES COMPLETO (fijo, 1–25 sep) ---------- */
+(function(){
+  const days=Array.from({length:25},(_,i)=>i+1);
+  const get=(A,d,k)=>{const r=A.find(x=>x.d===d);return r?r[k]:0};
+  const vI=days.map(d=>get(V,d,'inv')), rI=days.map(d=>get(R,d,'inv')), msg=days.map(d=>get(V,d,'res'));
+  mk('vMonth',{data:{labels:days.map(d=>d+' sep'),datasets:[
+      line('Personas que escribieron',msg,C.ink,{yAxisID:'y1',order:0,pointRadius:4,pointHoverRadius:7,pointBackgroundColor:C.ink,pointBorderColor:C.panel,pointBorderWidth:2,tension:.35}),
+      bar('Invertido en Ventas',vI,C.mag,{stack:'m',order:1,borderRadius:0,maxBarThickness:34}),
+      bar('Invertido en Reconocimiento',rI,C.cyan,{stack:'m',order:1,maxBarThickness:34})]},
+    options:{layout:{padding:{top:10}},interaction:{mode:'index',intersect:false},
+      scales:{x:{...xCat,stacked:true,ticks:{maxRotation:0,autoSkip:true,autoSkipPadding:8}},
+        y:{...yMoney,stacked:true,position:'left',title:{display:true,text:'Dinero invertido',color:C.ink2}},
+        y1:{beginAtZero:true,position:'right',suggestedMax:18,ticks:{precision:0,color:C.ink2},grid:{display:false},border:{display:false},title:{display:true,text:'Personas que escribieron',color:C.ink2}}},
+      plugins:{vlabels:{lineLabels:true},tooltip:{callbacks:{
+        label:c=>c.dataset.yAxisID==='y1'?` Personas que escribieron: ${c.raw}`:` ${c.dataset.label}: ${$(c.raw)}`,
+        footer:it=>{const i=it[0].dataIndex;const t=vI[i]+rI[i];return 'Total invertido: '+$(t)+(t>0&&msg[i]===0?'  ·  Ningún mensaje':'');}}}}}});
+})();
+
+/* ---------- NAVEGACIÓN ENTRE DASHBOARDS ---------- */
+function showView(name,skipHash){
+  const gen=document.getElementById('view-general'), det=document.getElementById('view-detalle');
+  const toDet=name==='detalle';
+  gen.hidden=toDet; det.hidden=!toDet;
+  window.scrollTo(0,0);
+  requestAnimationFrame(()=>Object.values(charts).forEach(c=>{try{c.resize()}catch(e){}}));
+  if(!skipHash){try{history.replaceState(null,'','#'+name)}catch(e){}}
+}
+document.querySelectorAll('[data-go]').forEach(b=>b.addEventListener('click',()=>showView(b.dataset.go)));
+document.querySelectorAll('nav.jump .links a').forEach(a=>a.addEventListener('click',e=>{
+  const t=document.querySelector(a.getAttribute('href')); if(!t) return; e.preventDefault();
+  t.scrollIntoView({behavior:matchMedia('(prefers-reduced-motion: reduce)').matches?'auto':'smooth',block:'start'});
+}));
+if(['#detalle','#ventas','#reconocimiento'].includes(location.hash)) showView('detalle',true);
+buildFilter('vFilter',vState,renderV);
+buildFilter('rFilter',rState,renderR);
+})();
+</script>
