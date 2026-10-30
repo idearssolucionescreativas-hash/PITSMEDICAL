@@ -1,0 +1,694 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0, viewport-fit=cover">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<title>PITS MEDICAL · Meta Ads Octubre</title>
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.5.1" integrity="sha384-jb8JQMbMoBUzgWatfe6COACi2ljcDdZQ2OxczGA3bGNeWe+6DChMTBJemed7ZnvJ" crossorigin="anonymous"></script>
+<style>
+/* Neon dark theme (always dark) */
+:root{
+  color-scheme:dark;
+  --bg:#050b18; --card:#0a1426; --head:#030916; --text:#e8f4ff; --muted:#8aa4c4; --line:rgba(0,212,255,.16); --soft:rgba(0,212,255,.08);
+  --gasto:#00d4ff; --alcance:#2bffb1; --conv:#ff9f1c; --res:#c15cff; --hook:#ffe14d; --consumo:#ff4fa3;
+  --lvl:#2a5cff; --lvlTop:#00f0ff; --ok:#3dff8a; --bad:#ff4d6d; --warnBg:rgba(255,159,28,.1); --warnTx:#ffc46b;
+  --glow:0 0 0 1px rgba(0,212,255,.18), 0 0 18px rgba(0,212,255,.10), inset 0 0 24px rgba(0,212,255,.04);
+  --px:clamp(16px,4vw,32px); --gap:clamp(10px,1.6vw,16px); --r:14px;
+}
+*{margin:0;padding:0;box-sizing:border-box}
+html{-webkit-text-size-adjust:100%;text-size-adjust:100%}
+/* Never let anything widen the page: iOS would zoom the whole page out and leave a blank strip */
+html,body{max-width:100%;overflow-x:hidden}
+@supports (overflow:clip){html,body{overflow-x:clip}}
+main.wrap,.card,.block{max-width:100%}
+button,a,summary{-webkit-tap-highlight-color:transparent}
+body{font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif;color:var(--text);line-height:1.45;font-size:clamp(13px,1.4vw,15px);
+  background:radial-gradient(1200px 600px at 85% -10%,rgba(0,140,255,.16),transparent 60%),radial-gradient(900px 500px at 20% 110%,rgba(0,255,200,.07),transparent 60%),var(--bg);background-attachment:fixed}
+.layout{display:grid;grid-template-columns:272px minmax(0,1fr);min-height:100vh;min-height:100dvh}
+body.lock{overflow:hidden}
+.wrap{max-width:1400px;width:100%;margin:0 auto;padding:var(--gap) var(--px) 40px}
+@supports (padding: env(safe-area-inset-left)){.wrap{padding-right:max(var(--px),env(safe-area-inset-right));padding-bottom:max(40px,calc(env(safe-area-inset-bottom) + 24px))}}
+/* Sidebar menu */
+.side{position:sticky;top:0;height:100vh;height:100dvh;overflow-y:auto;background:linear-gradient(180deg,#041029,var(--head));color:#fff;padding:22px 18px;display:flex;flex-direction:column;gap:22px;z-index:30;border-right:1px solid var(--line);box-shadow:4px 0 30px rgba(0,212,255,.06)}
+.brand{display:flex;gap:10px;align-items:center}
+.brand .logo{width:38px;height:38px;border-radius:10px;background:transparent;border:1.5px solid var(--gasto);color:var(--gasto);display:grid;place-items:center;font-weight:800;font-size:15px;flex:none;box-shadow:0 0 14px rgba(0,212,255,.45),inset 0 0 10px rgba(0,212,255,.25);text-shadow:0 0 8px rgba(0,212,255,.8)}
+.brand h1{font-size:16px;font-weight:700;line-height:1.2}
+.brand small{display:block;font-size:12px;opacity:.65;font-weight:400}
+.intro{background:rgba(0,212,255,.05);border:1px solid var(--line);border-radius:10px;padding:12px;margin-top:-6px}
+.intro p{font-size:12px;line-height:1.5;color:#b9d3ee;margin-top:6px}
+.intro p:first-of-type{margin-top:0}
+.intro b{color:var(--gasto);font-weight:700}
+.intro .next{border-left:2px solid var(--alcance);padding-left:8px;color:#d7fff0}
+.side .lbl{font-size:10.5px;text-transform:uppercase;letter-spacing:.8px;opacity:.55;margin-bottom:8px}
+.nav{display:flex;flex-direction:column;gap:2px}
+.nav a{display:flex;align-items:center;gap:10px;color:rgba(255,255,255,.78);text-decoration:none;padding:9px 10px;border-radius:8px;font-size:13.5px;border-left:3px solid transparent}
+.nav a svg{width:17px;height:17px;flex:none;stroke:currentColor;fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
+.nav a:hover{background:rgba(255,255,255,.07);color:#fff}
+.nav a.act{background:linear-gradient(90deg,rgba(0,212,255,.18),rgba(0,212,255,.02));color:var(--gasto);font-weight:600;border-left-color:var(--gasto);text-shadow:0 0 8px rgba(0,212,255,.6)}
+.fgroup{display:flex;flex-direction:column}
+.chips{display:flex;flex-wrap:wrap;gap:6px}
+.chip{border:1px solid rgba(0,212,255,.35);background:rgba(0,212,255,.04);color:#cfeaff;padding:6px 12px;border-radius:999px;cursor:pointer;font-size:13px;transition:all .15s}
+.chip:hover{border-color:var(--gasto);color:#fff}
+.chip.on{background:var(--gasto);color:#021024;border-color:var(--gasto);font-weight:700;box-shadow:0 0 14px rgba(0,212,255,.7)}
+.dates{display:grid;grid-template-columns:auto 1fr;gap:8px;align-items:center;font-size:12px}
+.dates span{opacity:.65}
+.dates input{background:rgba(255,255,255,.1);border:1px solid rgba(255,255,255,.3);color:#fff;border-radius:6px;padding:6px 8px;font-size:13px;color-scheme:dark;width:100%}
+.dates button{grid-column:1/-1;background:transparent;border:1px solid rgba(255,255,255,.3);color:#fff;border-radius:6px;padding:7px 10px;cursor:pointer;font-size:12px}
+.side .foot{margin-top:auto;font-size:11px;opacity:.5}
+.mtop{display:none}
+.backdrop{display:none}
+h2.sec{scroll-margin-top:16px}
+@media (max-width:980px){
+  body{background-attachment:scroll}
+  .layout{grid-template-columns:minmax(0,1fr)}
+  .dates input{font-size:16px}
+  .side{padding-bottom:max(22px,env(safe-area-inset-bottom))}
+  .mtop{display:flex;align-items:center;gap:12px;position:sticky;top:0;z-index:20;background:var(--head);color:#fff;border-bottom:1px solid var(--line);box-shadow:0 4px 20px rgba(0,212,255,.08);padding:10px var(--px);padding-top:max(10px,env(safe-area-inset-top))}
+  .mtop button{background:transparent;border:1px solid rgba(255,255,255,.3);color:#fff;border-radius:8px;width:38px;height:38px;font-size:18px;cursor:pointer}
+  .mtop b{font-size:15px}
+  .side{position:fixed;left:0;top:0;width:min(300px,86vw);transform:translateX(-100%);transition:transform .25s ease;padding-left:max(18px,env(safe-area-inset-left))}
+  .side.open{transform:none;box-shadow:8px 0 30px rgba(0,0,0,.35)}
+  .backdrop.open{display:block;position:fixed;inset:0;background:rgba(0,0,0,.45);z-index:25}
+  h2.sec{scroll-margin-top:70px}
+}
+.notice{background:var(--warnBg);color:var(--warnTx);border:1px solid rgba(255,159,28,.35);border-radius:8px;padding:10px 14px;margin-bottom:var(--gap);font-size:13px}
+.notice:empty{display:none}
+h2.sec{font-size:clamp(14px,1.6vw,16px);margin:clamp(18px,3vw,28px) 0 12px;text-transform:uppercase;letter-spacing:1.6px;color:var(--gasto);text-shadow:0 0 10px rgba(0,212,255,.55);display:flex;align-items:center;gap:12px}
+h2.sec::after{content:"";flex:1;height:1px;background:linear-gradient(90deg,rgba(0,212,255,.5),transparent)}
+.block{margin-bottom:14px}
+.block h3{font-size:12px;text-transform:uppercase;letter-spacing:.6px;color:var(--muted);margin-bottom:8px;display:flex;align-items:center;gap:8px}
+.block h3 i{width:10px;height:10px;border-radius:3px;display:inline-block;box-shadow:0 0 8px currentColor}
+.kpis{display:grid;grid-template-columns:repeat(4,1fr);gap:var(--gap)}
+@media (max-width:1100px){.kpis{grid-template-columns:repeat(3,1fr)}}
+@media (max-width:840px){.kpis{grid-template-columns:repeat(2,1fr)}}
+.ktabs{display:none}
+#tReg th:first-child,#tReg td:first-child{position:sticky;left:0;background:var(--card);z-index:1}
+@media (max-width:640px){
+  #tCat thead{display:none}
+  #tCat tbody{display:grid;gap:10px}
+  #tCat tr{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:6px 14px;background:rgba(0,212,255,.04);border:1px solid var(--line);border-radius:12px;padding:12px 14px}
+  #tCat td{border:0;padding:0;white-space:normal;text-align:left;display:flex;flex-direction:column;font-size:13.5px;color:#fff}
+  #tCat td::before{content:attr(data-l);font-size:10px;text-transform:uppercase;letter-spacing:.4px;color:var(--muted);margin-bottom:1px}
+  #tCat td:first-child{grid-column:1/-1;font-size:15px;color:var(--gasto);padding-bottom:6px;border-bottom:1px solid var(--line);margin-bottom:2px}
+  #tCat td:first-child::before{display:none}
+  #tCat tbody tr:hover td{background:none}
+  #tRmk th,#tRmk td{white-space:normal;padding:8px 6px;font-size:12.5px}
+  #tRmk th:nth-child(4),#tRmk td:nth-child(4){display:none}
+}
+@media (max-width:640px){
+  .ktabs{display:flex;gap:6px;overflow-x:auto;scroll-snap-type:x mandatory;-webkit-overflow-scrolling:touch;scrollbar-width:none;margin:0 calc(var(--px) * -1) 12px;padding:2px var(--px) 6px}
+  .ktabs::-webkit-scrollbar{display:none}
+  .ktabs button{flex:none;scroll-snap-align:start;display:flex;align-items:center;gap:6px;border:1px solid var(--line);background:var(--card);color:#b9d3ee;border-radius:999px;padding:8px 14px;font-size:13px;font-weight:600;white-space:nowrap}
+  .ktabs button i{width:8px;height:8px;border-radius:2px;box-shadow:0 0 6px currentColor}
+  .ktabs button.on{color:#021024;background:var(--tab);border-color:var(--tab);box-shadow:0 0 12px color-mix(in srgb,var(--tab) 70%,transparent)}
+  .ktabs button span{font-weight:400;opacity:.75}
+  .block{display:none;animation:kin .25s ease}
+  .block.show{display:block}
+  .block h3{display:none}
+  .kpis{grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}
+  .kpi{padding:11px 12px}
+  .kpi.hero{grid-column:1/-1}
+  .kpi .l{font-size:11.5px;line-height:1.3}
+  .kpi .v{font-size:clamp(17px,5.2vw,21px);line-height:1.2;margin:4px 0 2px}
+  .kpi.hero .v{font-size:clamp(22px,7vw,28px)}
+  .kpi .v small{font-size:.55em;font-weight:600;opacity:.7;margin-left:2px}
+  .kpi .n{font-size:10.5px;line-height:1.3;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
+  .kpi .tag{display:block;width:max-content;margin:3px 0 0}
+  .kdots{display:flex;justify-content:center;gap:6px;margin-top:12px}
+  .kdots b{width:6px;height:6px;border-radius:50%;background:var(--line);transition:all .2s}
+  .kdots b.on{width:18px;border-radius:3px;background:var(--gasto);box-shadow:0 0 8px var(--gasto)}
+}
+@media (min-width:641px){.kdots{display:none}.kpi .v small{font-size:.6em;font-weight:600;opacity:.75;margin-left:3px}}
+@keyframes kin{from{opacity:0;transform:translateX(12px)}to{opacity:1;transform:none}}
+@media (prefers-reduced-motion:reduce){.block{animation:none}}
+.kpi{background:linear-gradient(160deg,rgba(0,212,255,.06),transparent 55%),var(--card);border-radius:var(--r);padding:14px 16px;border:1px solid var(--line);border-top:2px solid var(--accent,var(--line));box-shadow:var(--glow),0 -6px 18px -12px var(--accent,transparent);transition:transform .15s,box-shadow .15s}
+@media (hover:hover){.kpi:hover{transform:translateY(-2px);box-shadow:var(--glow),0 0 22px -6px var(--accent,transparent)}}
+.kpi .l{font-size:12px;color:var(--muted)}
+.kpi .v{font-size:clamp(18px,2.2vw,24px);font-weight:700;margin:2px 0;font-variant-numeric:tabular-nums;color:#fff;text-shadow:0 0 12px color-mix(in srgb,var(--accent,#00d4ff) 55%,transparent)}
+.kpi .n{font-size:11px;color:var(--muted)}
+.tag{display:inline-block;font-size:11px;font-weight:600;padding:1px 7px;border-radius:999px;margin-left:4px}
+.tag.ok{color:var(--ok);background:color-mix(in srgb,var(--ok) 14%,transparent)}
+.tag.bad{color:var(--bad);background:color-mix(in srgb,var(--bad) 14%,transparent)}
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:var(--gap)}
+@media (max-width:980px){.grid2{grid-template-columns:1fr}}
+.card{background:linear-gradient(170deg,rgba(0,212,255,.05),transparent 40%),var(--card);border-radius:var(--r);padding:clamp(14px,2vw,22px);border:1px solid var(--line);box-shadow:var(--glow);overflow:visible;margin-bottom:var(--gap);min-width:0}
+.card h4{font-size:clamp(14px,1.6vw,16px);color:#fff}
+.card .sub{color:var(--muted);font-size:13px;margin:2px 0 8px}
+.strip{display:flex;flex-wrap:wrap;gap:6px;margin:2px 0 8px}
+.strip span{font-size:12px;color:#b9d3ee;background:rgba(0,212,255,.06);border:1px solid var(--line);border-radius:8px;padding:4px 9px}
+.strip b{color:#fff}
+.strip .m{border-color:color-mix(in srgb,var(--conv) 60%,transparent);background:color-mix(in srgb,var(--conv) 12%,transparent)}
+.strip .m b{color:var(--conv);font-size:14px;text-shadow:0 0 8px color-mix(in srgb,var(--conv) 60%,transparent)}
+.badge{display:inline-block;font-size:11px;background:var(--soft);color:#9fdcff;border:1px solid var(--line);border-radius:6px;padding:2px 8px;margin-bottom:8px}
+.cw{position:relative;height:clamp(260px,60vw,360px);overflow:visible}
+.cw.tall{height:clamp(300px,70vw,420px)}
+.cw.xtall{height:520px}
+.empty{position:absolute;inset:0;display:none;align-items:center;justify-content:center;text-align:center;color:var(--muted);padding:20px;background:var(--card)}
+details{margin-top:10px;font-size:13px;color:var(--muted)}
+details summary{cursor:pointer;color:var(--text);font-weight:600}
+details p,details li{margin-top:6px}
+details ul{padding-left:18px}
+.tw{overflow-x:auto;-webkit-overflow-scrolling:touch}
+table{width:100%;border-collapse:collapse;font-size:13px;font-variant-numeric:tabular-nums}
+th{text-align:left;font-size:11px;text-transform:uppercase;letter-spacing:.5px;color:#7fd8ff;padding:8px 10px;border-bottom:1px solid rgba(0,212,255,.4);white-space:nowrap}
+td{padding:8px 10px;border-bottom:1px solid var(--line);white-space:nowrap}
+tbody tr:hover td{background:rgba(0,212,255,.05)}
+tfoot td{border-top:1px solid rgba(0,212,255,.4);color:#fff}
+td.num,th.num{text-align:right}
+tr.dim td{opacity:.4}
+tr.p1 td:first-child{border-left:3px solid var(--lvlTop)}
+.sw{display:inline-block;width:10px;height:10px;border-radius:3px;margin-right:6px;vertical-align:middle}
+.finds{display:grid;grid-template-columns:repeat(3,1fr);gap:var(--gap)}
+@media (max-width:980px){.finds{grid-template-columns:1fr}}
+.fdrop{margin-bottom:var(--gap)}
+.fdrop>summary{list-style:none;cursor:pointer;display:flex;align-items:center;justify-content:space-between;gap:12px;background:linear-gradient(90deg,rgba(193,92,255,.12),rgba(0,212,255,.04)),var(--card);border:1px solid var(--line);border-radius:var(--r);padding:14px 18px;font-weight:600;color:#fff;box-shadow:var(--glow);transition:border-color .15s}
+.fdrop>summary::-webkit-details-marker{display:none}
+.fdrop>summary:hover{border-color:var(--res)}
+.fdrop>summary i{width:10px;height:10px;border-right:2px solid var(--res);border-bottom:2px solid var(--res);transform:rotate(45deg);transition:transform .2s;flex:none;margin-top:-4px}
+.fdrop[open]>summary{margin-bottom:var(--gap)}
+.fdrop[open]>summary i{transform:rotate(-135deg);margin-top:4px}
+.find{background:linear-gradient(170deg,rgba(193,92,255,.07),transparent 45%),var(--card);border:1px solid var(--line);border-radius:var(--r);padding:18px;box-shadow:var(--glow)}
+.find h5{color:#fff}
+.find b.k{display:block;font-size:12px;color:var(--muted);text-transform:uppercase;letter-spacing:.5px}
+.find h5{font-size:15px;margin:4px 0 8px}
+.find p{font-size:13px;margin-bottom:8px}
+.find .rec{border-left:3px solid var(--gasto);padding-left:10px}
+footer{color:var(--muted);font-size:12px;margin-top:24px}
+#chartTip{position:absolute;left:0;top:0;z-index:60;pointer-events:none;opacity:0;visibility:hidden;transition:opacity .15s;
+  max-width:min(300px,calc(100vw - 16px));background:rgba(3,12,30,.96);border:1px solid rgba(0,212,255,.6);border-radius:10px;padding:10px 12px;
+  box-shadow:0 0 18px rgba(0,212,255,.35);font-size:13px;line-height:1.45;color:#cfeaff}
+#chartTip .tt{color:#fff;font-weight:700;margin-bottom:4px;white-space:normal}
+#chartTip .tl{display:flex;align-items:center;gap:6px;white-space:normal}
+#chartTip .tl i{width:9px;height:9px;border-radius:2px;flex:none}
+@media print{.side,.mtop,.backdrop{display:none}.layout{display:block}.card,.kpi,.find{break-inside:avoid}}
+</style>
+</head>
+<body>
+<div class="mtop"><button id="menuBtn" aria-label="Abrir menú">☰</button><b>PITS MEDICAL · Meta Ads</b></div>
+<div class="backdrop" id="backdrop"></div>
+<div id="chartTip" role="status" aria-live="polite"></div>
+<div class="layout">
+<aside class="side" id="side">
+  <div class="brand"><div class="logo">PM</div><h1>PITS MEDICAL<small>Rendimiento Meta Ads</small></h1></div>
+  <div class="intro">
+    <div class="lbl">Resumen · 5 al 29 de octubre</div>
+    <p>Con una inversión de <b>$1,16 millones</b>, las campañas generaron <b>220 conversaciones</b> por WhatsApp y llegaron a cerca de <b>56.700 personas</b>.</p>
+    <p>La eficiencia mejoró durante el mes: el costo por conversación bajó de <b>$4.639</b> en la primera semana a <b>$3.758</b> en la última (<b>−19 %</b>).</p>
+    <p>PRODUCTS es la línea más rentable (<b>$3.407</b> por conversación) y TOFU ya construyó una audiencia interesada a muy bajo costo.</p>
+    <p class="next">Siguiente paso: reforzar los primeros segundos de los videos de venta y mover presupuesto hacia lo que mejor convierte para escalar resultados.</p>
+  </div>
+  <nav>
+    <div class="lbl">Secciones</div>
+    <div class="nav" id="nav">
+      <a href="#s-kpis"><svg viewBox="0 0 24 24"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/></svg>Tarjetas de métricas</a>
+      <a href="#s-video"><svg viewBox="0 0 24 24"><rect x="2" y="5" width="15" height="14" rx="2"/><path d="M17 10l5-3v10l-5-3z"/></svg>Video</a>
+      <a href="#s-inv"><svg viewBox="0 0 24 24"><path d="M3 3v18h18"/><path d="M7 15l4-4 3 3 6-6"/></svg>Inversión y resultados</a>
+      <a href="#s-cat"><svg viewBox="0 0 24 24"><path d="M3 6h18M3 12h18M3 18h18"/></svg>Comparativo por categoría</a>
+      <a href="#s-geo"><svg viewBox="0 0 24 24"><path d="M12 21s-7-6.5-7-12a7 7 0 0 1 14 0c0 5.5-7 12-7 12z"/><circle cx="12" cy="9" r="2.5"/></svg>Distribución geográfica</a>
+      <a href="#s-find"><svg viewBox="0 0 24 24"><path d="M9 18h6M10 22h4"/><path d="M12 2a7 7 0 0 0-4 12.7V17h8v-2.3A7 7 0 0 0 12 2z"/></svg>Hallazgos</a>
+    </div>
+  </nav>
+  <div class="fgroup"><div class="lbl">Categoría de campaña</div>
+    <div class="chips" id="chips">
+      <button class="chip" data-c="ALL">Todas</button>
+      <button class="chip" data-c="TOFU">TOFU</button>
+      <button class="chip" data-c="MOFU">MOFU</button>
+      <button class="chip" data-c="PRODUCTS">PRODUCTS</button>
+      <button class="chip" data-c="PACK">PACK</button>
+    </div>
+  </div>
+  <div class="fgroup"><div class="lbl">Rango de fechas (octubre)</div>
+    <div class="dates">
+      <span>Desde</span><input type="date" id="d1" min="2026-10-01" max="2026-10-31" value="2026-10-01">
+      <span>Hasta</span><input type="date" id="d2" min="2026-10-01" max="2026-10-31" value="2026-10-31">
+      <button id="dReset">Mes completo</button>
+    </div>
+  </div>
+  <div class="foot">IDEAR Marketing Digital</div>
+</aside>
+<main class="wrap">
+
+<div class="notice" id="notice"></div>
+
+<div id="selInfo" style="display:inline-block;background:var(--card);border:1px solid var(--line);border-left:3px solid var(--gasto);border-radius:8px;padding:8px 12px;font-size:13px;font-weight:600;color:#cfeaff;box-shadow:var(--glow)"></div>
+
+<h2 class="sec" id="s-kpis">Tarjetas de métricas</h2>
+<p class="sub" style="color:var(--muted);font-size:13px;margin:-4px 0 12px">Sin variación frente al período anterior: los archivos solo traen datos de octubre.</p>
+<div id="kpiBlocks"></div>
+
+<h2 class="sec" id="s-video">Video</h2>
+<div class="grid2">
+  <div class="card">
+    <h4>1 · % Hook vs. % Consumo por campaña</h4>
+    <div class="sub">Qué videos captan la atención en los primeros 3 segundos y cuáles retienen después del hook.</div>
+    <span class="badge">Responde al filtro de categoría y fechas</span>
+    <div class="cw tall"><canvas id="c1"></canvas><div class="empty" id="e1"></div></div>
+    <details><summary>Cómo leerla</summary>
+      <ul><li><b>% Hook</b> = reproducciones de 3 s ÷ impresiones. Por encima de 30 % el inicio del video funciona.</li>
+      <li><b>% Consumo</b> = ThruPlays ÷ reproducciones de 3 s. La línea roja punteada es el umbral mínimo de consumo (15 %).</li>
+      <li>Si el Hook es alto y el Consumo bajo, el inicio engancha pero el cuerpo no retiene. Si el Hook es bajo, hay que cambiar los primeros segundos.</li>
+      <li>Se muestra por campaña porque los archivos no traen el detalle por anuncio.</li></ul>
+    </details>
+  </div>
+  <div class="card">
+    <h4>2 · Niveles de visualización del video</h4>
+    <div class="sub">Cuántas reproducciones llegan a cada punto del video y a quién priorizar en remarketing.</div>
+    <span class="badge">Responde al filtro de categoría y fechas</span>
+    <div class="cw"><canvas id="c2"></canvas><div class="empty" id="e2"></div></div>
+    <div class="tw" style="margin-top:12px"><table id="tRmk"></table></div>
+    <details><summary>Cómo leerla</summary>
+      <ul><li>Cada barra muestra las reproducciones que llegaron a ese porcentaje del video. El % es la retención frente al nivel del 50 %.</li>
+      <li>Las barras moradas (95 % y 100 %) son la audiencia de mayor interés.</li>
+      <li>Los tamaños son reproducciones, no personas únicas, y son acumulativos: quien vio el 100 % también cuenta en el 95 %. El público real en Meta puede ser algo menor.</li></ul>
+    </details>
+  </div>
+</div>
+
+<h2 class="sec" id="s-inv">Inversión y resultados</h2>
+<div class="grid2">
+  <div class="card">
+    <h4>3 · Monto gastado vs. alcance diario</h4>
+    <div class="sub">Cómo se distribuye el presupuesto cada día y cuánta cobertura genera.</div>
+    <span class="badge">Datos diarios por campaña · responde al filtro de categoría y fechas</span>
+    <div class="strip" id="ss3"></div>
+    <div class="cw"><canvas id="c3"></canvas><div class="empty" id="e3"></div></div>
+    <details><summary>Cómo leerla</summary>
+      <ul><li>Barras = gasto del día (eje izquierdo, COP). Línea = alcance del día (eje derecho, personas).</li>
+      <li>Si la línea sube más que las barras, el día fue eficiente. El tooltip muestra el costo por cada 1.000 personas alcanzadas.</li>
+      <li>El recuadro superior resume la selección: mensajes recibidos, inversión, costo por mensaje y alcance. En el tooltip de cada día también aparecen los mensajes.</li>
+      <li>Los días sin barra no tuvieron inversión en la categoría elegida. Las campañas de ventas casi no entregaron los fines de semana (10–11, 17–18 y 24–25 de octubre).</li></ul>
+    </details>
+  </div>
+  <div class="card">
+    <h4>4 · Gasto diario vs. conversaciones iniciadas</h4>
+    <div class="sub">Compara día a día la inversión con las conversaciones de WhatsApp generadas.</div>
+    <span class="badge">Datos diarios por campaña · responde al filtro de categoría y fechas</span>
+    <div class="strip" id="ss4"></div>
+    <div class="cw"><canvas id="c4"></canvas><div class="empty" id="e4"></div></div>
+    <details><summary>Cómo leerla</summary>
+      <ul><li>Barras = gasto del día (eje izquierdo). Línea = conversaciones iniciadas (eje derecho).</li>
+      <li>Busca días donde la línea sube con el mismo gasto o con menos: ahí el costo por conversación baja (lo verás en el tooltip).</li></ul>
+    </details>
+  </div>
+</div>
+<div class="card">
+  <h4>5 · Rendimiento por campaña</h4>
+  <div class="sub">Qué campañas generan más resultados en relación con su inversión.</div>
+  <span class="badge">Responde al filtro de categoría y fechas</span>
+  <div class="cw tall"><canvas id="c5"></canvas><div class="empty" id="e5"></div></div>
+  <details><summary>Cómo leerla</summary>
+    <ul><li>Campañas ordenadas de mayor a menor gasto (barras, eje izquierdo). La línea muestra los resultados (eje derecho).</li>
+    <li>Las campañas TOFU cuentan ThruPlays y las de ventas cuentan conversaciones, así que sus volúmenes no se comparan directamente. Cuando aparecen ambas, el eje derecho es logarítmico para que las dos sean visibles.</li>
+    <li>Gasto alto con línea baja indica una campaña cara. Mira el costo por resultado en el tooltip.</li></ul>
+  </details>
+</div>
+
+<h2 class="sec" id="s-cat">Comparativo por categoría</h2>
+<div class="card">
+  <div class="sub">Inversión, alcance, resultados y costo de las 4 categorías. Las categorías no seleccionadas se ven atenuadas.</div>
+  <div class="tw"><table id="tCat"></table></div>
+  <details><summary>Cómo se definieron las categorías</summary>
+    <p>TOFU = el nombre contiene "TOFU". PRODUCTS y PACK = contienen "products" o "Pack". <b>MOFU</b> agrupa PRODUCTS + PACK: las 5 campañas de fase 2 llevan "MOFU" en el nombre, así que no hay campañas solo MOFU. El alcance marcado con ≈ es una suma de campañas y puede contar personas repetidas.</p>
+  </details>
+</div>
+
+<h2 class="sec" id="s-geo">Distribución geográfica</h2>
+<div class="grid2">
+  <div class="card">
+    <h4>Gasto por departamento</h4>
+    <div class="sub">Dónde se invierte el presupuesto de las campañas de ventas.</div>
+    <span class="badge">Archivo REGION · 5 al 29 oct · solo ventas · no responde a los filtros</span>
+    <div class="cw tall"><canvas id="c6"></canvas></div>
+  </div>
+  <div class="card">
+    <h4>Detalle por departamento</h4>
+    <div class="sub">Costo por clic y CPM para comparar la eficiencia de cada zona.</div>
+    <div class="tw"><table id="tReg"></table></div>
+  </div>
+</div>
+
+<h2 class="sec" id="s-find">Hallazgos y recomendaciones</h2>
+<details class="fdrop" id="findDrop">
+<summary><span>Ver los 3 hallazgos principales y sus recomendaciones</span><i aria-hidden="true"></i></summary>
+<div class="finds">
+  <div class="find"><b class="k">Hallazgo 1 · Costo</b>
+    <h5>PACK cuesta casi el doble por conversación que PRODUCTS</h5>
+    <p>PRODUCTS: $429.304 → 126 conversaciones (<b>$3.407</b> c/u). PACK: $616.421 → 94 conversaciones (<b>$6.558</b> c/u). La peor es PACK · BGTA: $242.936 por 26 conversaciones ($9.344 c/u), con un Hook de apenas 2,2 %.</p>
+    <p class="rec"><b>Recomendación:</b> pausar o cambiar el creativo de PACK · BGTA y pasar ese presupuesto a PRODUCTS · BGTA y PRODUCTS · MDN-BCM-BQLL, que son las que más conversaciones generan. Volver a medir en 7 días.</p>
+  </div>
+  <div class="find"><b class="k">Hallazgo 2 · Video</b>
+    <h5>Ningún video de ventas llega al 30 % de Hook</h5>
+    <p>Las campañas TOFU enganchan al 78–84 %, mientras que las de ventas se quedan entre 2 % y 16 %. El Consumo sí supera el 15 % en todas (24–32 %): quien pasa del segundo 3 se queda. El problema está en el inicio del video, no en el cuerpo.</p>
+    <p class="rec"><b>Recomendación:</b> poner en los anuncios de ventas los primeros 3 segundos de los videos TOFU que mejor funcionan (pregunta o imagen del equipo de optometría en uso) y probar 2–3 versiones de inicio por campaña.</p>
+  </div>
+  <div class="find"><b class="k">Hallazgo 3 · Remarketing</b>
+    <h5>TOFU genera audiencia caliente muy barata</h5>
+    <p>Con solo el 9,7 % del presupuesto ($112.950), TOFU obtuvo 17.372 ThruPlays a $6,5 cada uno y 1.315 reproducciones al 95 %, con un CPM de $4.182, frente a ~$10.800 en ventas. Esa es la audiencia de Prioridad 1 más barata de la cuenta.</p>
+    <p class="rec"><b>Recomendación:</b> crear públicos personalizados de "vieron el 95 %" y "vieron el 75 %" de los videos TOFU (30 días) y usarlos en la campaña PACK de remarketing en lugar de públicos amplios. Mantener TOFU activo para seguir llenando esos públicos.</p>
+  </div>
+</div>
+</details>
+
+<footer>Elaborado por IDEAR Marketing Digital · Datos de Meta Ads Manager exportados el 29-oct-2026 · Las reproducciones de 3 s y los ThruPlays se calcularon con las columnas % Hook y % Consumo de los informes; los clics diarios, con el CTR. Los cruces entre archivos cuadran al 100 %.</footer>
+</main>
+</div>
+
+<script>
+const D = {"campanas": [{"nombre": "⚪F1 | TOFU CBO | ThruPlay | Consumo Videos | BGA", "corto": "TOFU · BGA", "cat": "TOFU", "mofu": false, "objetivo": "OUTCOME_AWARENESS", "gasto": 90001, "alcance": 20937, "impr": 22000, "tipo": "ThruPlay", "res": 13724, "conv": 0, "inter": 17158, "visIG": 0, "segIG": 0, "p3": 17085, "thru": 13724, "p50": 2780, "p75": 1460, "p95": 1084, "p100": 979}, {"nombre": "⚪F1 | TOFU | CBO | ThruPlay | Consumo Videos | MDN-BCM-BQLL", "corto": "TOFU · MDN-BCM-BQLL", "cat": "TOFU", "mofu": false, "objetivo": "OUTCOME_AWARENESS", "gasto": 8367, "alcance": 2017, "impr": 2017, "tipo": "ThruPlay", "res": 1518, "conv": 0, "inter": 1701, "visIG": 0, "segIG": 0, "p3": 1692, "thru": 1518, "p50": 499, "p75": 135, "p95": 114, "p100": 109}, {"nombre": "🟢F2 🔬 | MOFU | CBO products | VTA-wpp | BGTA", "corto": "PRODUCTS · BGTA", "cat": "PRODUCTS", "mofu": true, "objetivo": "OUTCOME_SALES", "gasto": 276554, "alcance": 8965, "impr": 22288, "tipo": "Conversaciones con mensajes iniciadas", "res": 78, "conv": 78, "inter": 3879, "visIG": 36, "segIG": 4, "p3": 3616, "thru": 1156, "p50": 742, "p75": 482, "p95": 304, "p100": 244}, {"nombre": "🔴F2 🔬| MOFU | CBO products | VTA-wpp | MDN-BCM-BQLL", "corto": "PRODUCTS · MDN-BCM-BQLL", "cat": "PRODUCTS", "mofu": true, "objetivo": "OUTCOME_SALES", "gasto": 152750, "alcance": 12200, "impr": 19238, "tipo": "Conversaciones con mensajes iniciadas", "res": 48, "conv": 48, "inter": 3219, "visIG": 25, "segIG": 4, "p3": 3032, "thru": 935, "p50": 609, "p75": 265, "p95": 140, "p100": 120}, {"nombre": "🔥F2 ⏫ | MOFU | CBO Pack | VTA Wpp | | REMARK | ADV+ CUSTOM 30 dias| MDN-BCM-BQLL-BGTA | Escalada", "corto": "PACK · Remarketing ADV+", "cat": "PACK", "mofu": true, "objetivo": "OUTCOME_SALES", "gasto": 210904, "alcance": 7793, "impr": 17127, "tipo": "Conversaciones con mensajes iniciadas", "res": 43, "conv": 43, "inter": 2466, "visIG": 30, "segIG": 6, "p3": 2301, "thru": 648, "p50": 391, "p75": 257, "p95": 185, "p100": 139}, {"nombre": "🟢F2 🔬 | MOFU | CBO Pack | VTA Wpp | BGTA | Pack", "corto": "PACK · BGTA", "cat": "PACK", "mofu": true, "objetivo": "OUTCOME_SALES", "gasto": 242936, "alcance": 11402, "impr": 25896, "tipo": "Conversaciones con mensajes iniciadas", "res": 26, "conv": 26, "inter": 737, "visIG": 31, "segIG": 2, "p3": 568, "thru": 137, "p50": 78, "p75": 50, "p95": 33, "p100": 26}, {"nombre": "🔴F2 🔬 |MOFU|  CBO Pack | VTA Wpp | MDN-BCM-BQLL", "corto": "PACK · MDN-BCM-BQLL", "cat": "PACK", "mofu": true, "objetivo": "OUTCOME_SALES", "gasto": 162581, "alcance": 5380, "impr": 12053, "tipo": "Conversaciones con mensajes iniciadas", "res": 25, "conv": 25, "inter": 1482, "visIG": 17, "segIG": 2, "p3": 1383, "thru": 367, "p50": 212, "p75": 154, "p95": 100, "p100": 75}], "cd": [{"dia": "2026-10-06", "ci": 2, "cat": "PRODUCTS", "gasto": 17572, "alcance": 823, "impr": 1269, "res": 3, "conv": 3, "inter": 222, "visIG": 3, "segIG": 0, "p3": 212, "thru": 67, "p50": 49, "p75": 32, "p95": 21, "p100": 16}, {"dia": "2026-10-06", "ci": 3, "cat": "PRODUCTS", "gasto": 15172, "alcance": 785, "impr": 1202, "res": 6, "conv": 6, "inter": 180, "visIG": 2, "segIG": 0, "p3": 165, "thru": 52, "p50": 33, "p75": 24, "p95": 14, "p100": 11}, {"dia": "2026-10-06", "ci": 5, "cat": "PACK", "gasto": 27119, "alcance": 1147, "impr": 1900, "res": 6, "conv": 6, "inter": 107, "visIG": 6, "segIG": 0, "p3": 93, "thru": 25, "p50": 16, "p75": 10, "p95": 7, "p100": 7}, {"dia": "2026-10-06", "ci": 6, "cat": "PACK", "gasto": 15266, "alcance": 468, "impr": 785, "res": 3, "conv": 3, "inter": 99, "visIG": 1, "segIG": 0, "p3": 89, "thru": 38, "p50": 25, "p75": 17, "p95": 14, "p100": 10}, {"dia": "2026-10-07", "ci": 2, "cat": "PRODUCTS", "gasto": 21561, "alcance": 1200, "impr": 1866, "res": 7, "conv": 7, "inter": 442, "visIG": 1, "segIG": 0, "p3": 414, "thru": 141, "p50": 85, "p75": 58, "p95": 34, "p100": 24}, {"dia": "2026-10-07", "ci": 3, "cat": "PRODUCTS", "gasto": 16168, "alcance": 846, "impr": 1214, "res": 6, "conv": 6, "inter": 299, "visIG": 1, "segIG": 0, "p3": 288, "thru": 95, "p50": 61, "p75": 44, "p95": 24, "p100": 22}, {"dia": "2026-10-07", "ci": 5, "cat": "PACK", "gasto": 25562, "alcance": 1501, "impr": 2180, "res": 1, "conv": 1, "inter": 82, "visIG": 4, "segIG": 0, "p3": 69, "thru": 16, "p50": 9, "p75": 6, "p95": 3, "p100": 3}, {"dia": "2026-10-07", "ci": 6, "cat": "PACK", "gasto": 12929, "alcance": 546, "impr": 841, "res": 3, "conv": 3, "inter": 55, "visIG": 1, "segIG": 0, "p3": 46, "thru": 8, "p50": 7, "p75": 3, "p95": 3, "p100": 2}, {"dia": "2026-10-08", "ci": 2, "cat": "PRODUCTS", "gasto": 16998, "alcance": 1015, "impr": 1388, "res": 6, "conv": 6, "inter": 246, "visIG": 4, "segIG": 0, "p3": 225, "thru": 88, "p50": 51, "p75": 36, "p95": 20, "p100": 19}, {"dia": "2026-10-08", "ci": 3, "cat": "PRODUCTS", "gasto": 10916, "alcance": 682, "impr": 887, "res": 2, "conv": 2, "inter": 244, "visIG": 6, "segIG": 1, "p3": 237, "thru": 74, "p50": 41, "p75": 26, "p95": 10, "p100": 8}, {"dia": "2026-10-08", "ci": 5, "cat": "PACK", "gasto": 27239, "alcance": 1431, "impr": 2029, "res": 2, "conv": 2, "inter": 79, "visIG": 1, "segIG": 0, "p3": 63, "thru": 15, "p50": 5, "p75": 4, "p95": 4, "p100": 2}, {"dia": "2026-10-08", "ci": 6, "cat": "PACK", "gasto": 13536, "alcance": 670, "impr": 925, "res": 3, "conv": 3, "inter": 96, "visIG": 3, "segIG": 0, "p3": 87, "thru": 25, "p50": 15, "p75": 14, "p95": 7, "p100": 7}, {"dia": "2026-10-09", "ci": 2, "cat": "PRODUCTS", "gasto": 22455, "alcance": 1624, "impr": 1996, "res": 5, "conv": 5, "inter": 356, "visIG": 2, "segIG": 0, "p3": 335, "thru": 112, "p50": 68, "p75": 37, "p95": 22, "p100": 19}, {"dia": "2026-10-09", "ci": 3, "cat": "PRODUCTS", "gasto": 17323, "alcance": 5726, "impr": 6102, "res": 9, "conv": 9, "inter": 856, "visIG": 5, "segIG": 3, "p3": 802, "thru": 258, "p50": 184, "p75": 33, "p95": 16, "p100": 14}, {"dia": "2026-10-09", "ci": 5, "cat": "PACK", "gasto": 27713, "alcance": 3186, "impr": 3840, "res": 2, "conv": 2, "inter": 129, "visIG": 7, "segIG": 1, "p3": 108, "thru": 23, "p50": 11, "p75": 7, "p95": 5, "p100": 5}, {"dia": "2026-10-09", "ci": 6, "cat": "PACK", "gasto": 15751, "alcance": 568, "impr": 758, "res": 3, "conv": 3, "inter": 81, "visIG": 2, "segIG": 0, "p3": 75, "thru": 20, "p50": 12, "p75": 7, "p95": 3, "p100": 2}, {"dia": "2026-10-10", "ci": 0, "cat": "TOFU", "gasto": 9495, "alcance": 2031, "impr": 2113, "res": 1708, "conv": 0, "inter": 1878, "visIG": 0, "segIG": 0, "p3": 1876, "thru": 1708, "p50": 359, "p75": 135, "p95": 115, "p100": 113}, {"dia": "2026-10-10", "ci": 1, "cat": "TOFU", "gasto": 8367, "alcance": 2017, "impr": 2017, "res": 1518, "conv": 0, "inter": 1701, "visIG": 0, "segIG": 0, "p3": 1692, "thru": 1518, "p50": 499, "p75": 135, "p95": 114, "p100": 109}, {"dia": "2026-10-10", "ci": 2, "cat": "PRODUCTS", "gasto": 2082, "alcance": 134, "impr": 150, "res": 1, "conv": 1, "inter": 22, "visIG": 0, "segIG": 0, "p3": 20, "thru": 6, "p50": 4, "p75": 0, "p95": 0, "p100": 0}, {"dia": "2026-10-10", "ci": 3, "cat": "PRODUCTS", "gasto": 340, "alcance": 27, "impr": 32, "res": 0, "conv": 0, "inter": 7, "visIG": 0, "segIG": 0, "p3": 7, "thru": 1, "p50": 1, "p75": 1, "p95": 1, "p100": 1}, {"dia": "2026-10-10", "ci": 5, "cat": "PACK", "gasto": 595, "alcance": 23, "impr": 24, "res": 0, "conv": 0, "inter": 0, "visIG": 0, "segIG": 0, "p3": 0, "thru": 0, "p50": 0, "p75": 0, "p95": 0, "p100": 0}, {"dia": "2026-10-10", "ci": 6, "cat": "PACK", "gasto": 445, "alcance": 43, "impr": 44, "res": 0, "conv": 0, "inter": 1, "visIG": 0, "segIG": 0, "p3": 1, "thru": 0, "p50": 0, "p75": 0, "p95": 0, "p100": 0}, {"dia": "2026-10-11", "ci": 2, "cat": "PRODUCTS", "gasto": 3, "alcance": 1, "impr": 1, "res": 0, "conv": 0, "inter": 0, "visIG": 0, "segIG": 0, "p3": 0, "thru": 0, "p50": 0, "p75": 0, "p95": 0, "p100": 0}, {"dia": "2026-10-12", "ci": 2, "cat": "PRODUCTS", "gasto": 30015, "alcance": 2691, "impr": 3278, "res": 5, "conv": 5, "inter": 429, "visIG": 4, "segIG": 0, "p3": 405, "thru": 116, "p50": 72, "p75": 51, "p95": 27, "p100": 22}, {"dia": "2026-10-12", "ci": 3, "cat": "PRODUCTS", "gasto": 23939, "alcance": 3398, "impr": 3761, "res": 10, "conv": 10, "inter": 616, "visIG": 3, "segIG": 0, "p3": 568, "thru": 177, "p50": 125, "p75": 37, "p95": 22, "p100": 19}, {"dia": "2026-10-12", "ci": 5, "cat": "PACK", "gasto": 24773, "alcance": 3059, "impr": 3476, "res": 2, "conv": 2, "inter": 102, "visIG": 0, "segIG": 0, "p3": 75, "thru": 15, "p50": 11, "p75": 0, "p95": 0, "p100": 0}, {"dia": "2026-10-12", "ci": 6, "cat": "PACK", "gasto": 22736, "alcance": 1176, "impr": 1562, "res": 3, "conv": 3, "inter": 224, "visIG": 2, "segIG": 0, "p3": 214, "thru": 55, "p50": 35, "p75": 26, "p95": 16, "p100": 9}, {"dia": "2026-10-13", "ci": 2, "cat": "PRODUCTS", "gasto": 27034, "alcance": 1321, "impr": 1857, "res": 9, "conv": 9, "inter": 340, "visIG": 6, "segIG": 2, "p3": 315, "thru": 84, "p50": 54, "p75": 45, "p95": 28, "p100": 26}, {"dia": "2026-10-13", "ci": 3, "cat": "PRODUCTS", "gasto": 20256, "alcance": 1171, "impr": 1459, "res": 3, "conv": 3, "inter": 314, "visIG": 3, "segIG": 0, "p3": 299, "thru": 93, "p50": 49, "p75": 23, "p95": 11, "p100": 10}, {"dia": "2026-10-13", "ci": 5, "cat": "PACK", "gasto": 28611, "alcance": 2101, "impr": 3150, "res": 5, "conv": 5, "inter": 16, "visIG": 8, "segIG": 1, "p3": 0, "thru": 0, "p50": 0, "p75": 0, "p95": 0, "p100": 0}, {"dia": "2026-10-13", "ci": 6, "cat": "PACK", "gasto": 22173, "alcance": 934, "impr": 1375, "res": 3, "conv": 3, "inter": 173, "visIG": 4, "segIG": 1, "p3": 162, "thru": 41, "p50": 19, "p75": 17, "p95": 9, "p100": 8}, {"dia": "2026-10-14", "ci": 2, "cat": "PRODUCTS", "gasto": 25102, "alcance": 2045, "impr": 2426, "res": 5, "conv": 5, "inter": 437, "visIG": 11, "segIG": 1, "p3": 414, "thru": 120, "p50": 80, "p75": 43, "p95": 27, "p100": 22}, {"dia": "2026-10-14", "ci": 3, "cat": "PRODUCTS", "gasto": 18173, "alcance": 1336, "impr": 1588, "res": 5, "conv": 5, "inter": 317, "visIG": 3, "segIG": 0, "p3": 298, "thru": 87, "p50": 52, "p75": 33, "p95": 18, "p100": 16}, {"dia": "2026-10-14", "ci": 5, "cat": "PACK", "gasto": 26882, "alcance": 2152, "impr": 3038, "res": 3, "conv": 3, "inter": 14, "visIG": 3, "segIG": 0, "p3": 0, "thru": 0, "p50": 0, "p75": 0, "p95": 0, "p100": 0}, {"dia": "2026-10-14", "ci": 6, "cat": "PACK", "gasto": 17256, "alcance": 1578, "impr": 1990, "res": 3, "conv": 3, "inter": 251, "visIG": 1, "segIG": 0, "p3": 233, "thru": 68, "p50": 30, "p75": 24, "p95": 16, "p100": 13}, {"dia": "2026-10-15", "ci": 2, "cat": "PRODUCTS", "gasto": 21934, "alcance": 1475, "impr": 1891, "res": 5, "conv": 5, "inter": 326, "visIG": 0, "segIG": 0, "p3": 305, "thru": 89, "p50": 54, "p75": 41, "p95": 30, "p100": 25}, {"dia": "2026-10-15", "ci": 3, "cat": "PRODUCTS", "gasto": 16681, "alcance": 1337, "impr": 1756, "res": 4, "conv": 4, "inter": 240, "visIG": 2, "segIG": 0, "p3": 228, "thru": 65, "p50": 44, "p75": 29, "p95": 16, "p100": 12}, {"dia": "2026-10-15", "ci": 5, "cat": "PACK", "gasto": 23338, "alcance": 1985, "impr": 2778, "res": 2, "conv": 2, "inter": 20, "visIG": 1, "segIG": 0, "p3": 0, "thru": 0, "p50": 0, "p75": 0, "p95": 0, "p100": 0}, {"dia": "2026-10-15", "ci": 6, "cat": "PACK", "gasto": 15312, "alcance": 963, "impr": 1266, "res": 3, "conv": 3, "inter": 178, "visIG": 2, "segIG": 0, "p3": 166, "thru": 40, "p50": 25, "p75": 17, "p95": 13, "p100": 9}, {"dia": "2026-10-16", "ci": 2, "cat": "PRODUCTS", "gasto": 17124, "alcance": 1254, "impr": 1519, "res": 0, "conv": 0, "inter": 200, "visIG": 0, "segIG": 0, "p3": 188, "thru": 37, "p50": 19, "p75": 13, "p95": 8, "p100": 7}, {"dia": "2026-10-16", "ci": 3, "cat": "PRODUCTS", "gasto": 11132, "alcance": 904, "impr": 1099, "res": 2, "conv": 2, "inter": 137, "visIG": 0, "segIG": 0, "p3": 131, "thru": 29, "p50": 17, "p75": 13, "p95": 7, "p100": 6}, {"dia": "2026-10-16", "ci": 5, "cat": "PACK", "gasto": 17530, "alcance": 2043, "impr": 2565, "res": 2, "conv": 2, "inter": 80, "visIG": 0, "segIG": 0, "p3": 56, "thru": 17, "p50": 12, "p75": 10, "p95": 5, "p100": 3}, {"dia": "2026-10-16", "ci": 6, "cat": "PACK", "gasto": 13038, "alcance": 957, "impr": 1263, "res": 0, "conv": 0, "inter": 193, "visIG": 1, "segIG": 0, "p3": 186, "thru": 44, "p50": 32, "p75": 22, "p95": 12, "p100": 11}, {"dia": "2026-10-17", "ci": 3, "cat": "PRODUCTS", "gasto": 0, "alcance": 0, "impr": 0, "res": 1, "conv": 1, "inter": 0, "visIG": 0, "segIG": 0, "p3": 0, "thru": 0, "p50": 0, "p75": 0, "p95": 0, "p100": 0}, {"dia": "2026-10-17", "ci": 5, "cat": "PACK", "gasto": 7124, "alcance": 550, "impr": 658, "res": 1, "conv": 1, "inter": 83, "visIG": 1, "segIG": 0, "p3": 79, "thru": 22, "p50": 11, "p75": 10, "p95": 8, "p100": 5}, {"dia": "2026-10-17", "ci": 6, "cat": "PACK", "gasto": 5069, "alcance": 392, "impr": 472, "res": 0, "conv": 0, "inter": 47, "visIG": 2, "segIG": 0, "p3": 44, "thru": 9, "p50": 4, "p75": 2, "p95": 1, "p100": 0}, {"dia": "2026-10-18", "ci": 5, "cat": "PACK", "gasto": 214, "alcance": 10, "impr": 12, "res": 0, "conv": 0, "inter": 3, "visIG": 0, "segIG": 0, "p3": 3, "thru": 1, "p50": 1, "p75": 1, "p95": 0, "p100": 0}, {"dia": "2026-10-18", "ci": 6, "cat": "PACK", "gasto": 840, "alcance": 35, "impr": 37, "res": 0, "conv": 0, "inter": 7, "visIG": 0, "segIG": 0, "p3": 7, "thru": 2, "p50": 0, "p75": 0, "p95": 0, "p100": 0}, {"dia": "2026-10-19", "ci": 0, "cat": "TOFU", "gasto": 9438, "alcance": 2710, "impr": 2785, "res": 1319, "conv": 0, "inter": 2041, "visIG": 0, "segIG": 0, "p3": 2032, "thru": 1319, "p50": 447, "p75": 262, "p95": 160, "p100": 132}, {"dia": "2026-10-19", "ci": 2, "cat": "PRODUCTS", "gasto": 11114, "alcance": 484, "impr": 582, "res": 3, "conv": 3, "inter": 76, "visIG": 1, "segIG": 0, "p3": 69, "thru": 29, "p50": 20, "p75": 13, "p95": 8, "p100": 5}, {"dia": "2026-10-19", "ci": 3, "cat": "PRODUCTS", "gasto": 2650, "alcance": 124, "impr": 138, "res": 0, "conv": 0, "inter": 9, "visIG": 0, "segIG": 0, "p3": 9, "thru": 4, "p50": 2, "p75": 2, "p95": 1, "p100": 1}, {"dia": "2026-10-19", "ci": 4, "cat": "PACK", "gasto": 37699, "alcance": 2092, "impr": 2706, "res": 9, "conv": 9, "inter": 357, "visIG": 5, "segIG": 2, "p3": 326, "thru": 91, "p50": 50, "p75": 35, "p95": 20, "p100": 16}, {"dia": "2026-10-19", "ci": 5, "cat": "PACK", "gasto": 6236, "alcance": 228, "impr": 246, "res": 0, "conv": 0, "inter": 22, "visIG": 0, "segIG": 0, "p3": 22, "thru": 3, "p50": 2, "p75": 2, "p95": 1, "p100": 1}, {"dia": "2026-10-19", "ci": 6, "cat": "PACK", "gasto": 8230, "alcance": 658, "impr": 735, "res": 1, "conv": 1, "inter": 77, "visIG": 1, "segIG": 1, "p3": 73, "thru": 17, "p50": 8, "p75": 5, "p95": 6, "p100": 4}, {"dia": "2026-10-20", "ci": 0, "cat": "TOFU", "gasto": 15521, "alcance": 3672, "impr": 3711, "res": 2130, "conv": 0, "inter": 2916, "visIG": 0, "segIG": 0, "p3": 2907, "thru": 2130, "p50": 504, "p75": 294, "p95": 202, "p100": 171}, {"dia": "2026-10-20", "ci": 2, "cat": "PRODUCTS", "gasto": 14046, "alcance": 696, "impr": 984, "res": 2, "conv": 2, "inter": 101, "visIG": 2, "segIG": 0, "p3": 90, "thru": 31, "p50": 19, "p75": 14, "p95": 10, "p100": 6}, {"dia": "2026-10-20", "ci": 4, "cat": "PACK", "gasto": 56935, "alcance": 3287, "impr": 4504, "res": 9, "conv": 9, "inter": 628, "visIG": 9, "segIG": 2, "p3": 585, "thru": 147, "p50": 91, "p75": 65, "p95": 40, "p100": 35}, {"dia": "2026-10-21", "ci": 0, "cat": "TOFU", "gasto": 1682, "alcance": 396, "impr": 404, "res": 210, "conv": 0, "inter": 299, "visIG": 0, "segIG": 0, "p3": 296, "thru": 210, "p50": 55, "p75": 33, "p95": 24, "p100": 21}, {"dia": "2026-10-21", "ci": 2, "cat": "PRODUCTS", "gasto": 14357, "alcance": 576, "impr": 702, "res": 3, "conv": 3, "inter": 141, "visIG": 1, "segIG": 0, "p3": 131, "thru": 52, "p50": 42, "p75": 26, "p95": 16, "p100": 10}, {"dia": "2026-10-21", "ci": 4, "cat": "PACK", "gasto": 29675, "alcance": 1896, "impr": 2517, "res": 6, "conv": 6, "inter": 366, "visIG": 3, "segIG": 1, "p3": 341, "thru": 110, "p50": 72, "p75": 43, "p95": 27, "p100": 20}, {"dia": "2026-10-22", "ci": 2, "cat": "PRODUCTS", "gasto": 13685, "alcance": 645, "impr": 796, "res": 10, "conv": 10, "inter": 196, "visIG": 0, "segIG": 0, "p3": 179, "thru": 75, "p50": 45, "p75": 22, "p95": 16, "p100": 13}, {"dia": "2026-10-22", "ci": 4, "cat": "PACK", "gasto": 40546, "alcance": 2482, "impr": 3665, "res": 10, "conv": 10, "inter": 545, "visIG": 8, "segIG": 1, "p3": 520, "thru": 143, "p50": 81, "p75": 54, "p95": 47, "p100": 35}, {"dia": "2026-10-23", "ci": 2, "cat": "PRODUCTS", "gasto": 9821, "alcance": 703, "impr": 807, "res": 9, "conv": 9, "inter": 206, "visIG": 1, "segIG": 0, "p3": 188, "thru": 66, "p50": 46, "p75": 30, "p95": 26, "p100": 23}, {"dia": "2026-10-23", "ci": 4, "cat": "PACK", "gasto": 28096, "alcance": 1673, "impr": 2226, "res": 6, "conv": 6, "inter": 389, "visIG": 4, "segIG": 0, "p3": 363, "thru": 107, "p50": 68, "p75": 40, "p95": 36, "p100": 25}, {"dia": "2026-10-25", "ci": 0, "cat": "TOFU", "gasto": 2759, "alcance": 1718, "impr": 1718, "res": 412, "conv": 0, "inter": 737, "visIG": 0, "segIG": 0, "p3": 733, "thru": 412, "p50": 199, "p75": 70, "p95": 50, "p100": 45}, {"dia": "2026-10-26", "ci": 0, "cat": "TOFU", "gasto": 19132, "alcance": 4241, "impr": 4338, "res": 2985, "conv": 0, "inter": 3664, "visIG": 0, "segIG": 0, "p3": 3642, "thru": 2985, "p50": 638, "p75": 306, "p95": 235, "p100": 222}, {"dia": "2026-10-26", "ci": 2, "cat": "PRODUCTS", "gasto": 11651, "alcance": 597, "impr": 776, "res": 5, "conv": 5, "inter": 139, "visIG": 1, "segIG": 1, "p3": 126, "thru": 43, "p50": 34, "p75": 21, "p95": 11, "p100": 7}, {"dia": "2026-10-26", "ci": 4, "cat": "PACK", "gasto": 17953, "alcance": 1085, "impr": 1509, "res": 3, "conv": 3, "inter": 181, "visIG": 1, "segIG": 0, "p3": 166, "thru": 50, "p50": 29, "p75": 20, "p95": 15, "p100": 8}, {"dia": "2026-10-27", "ci": 0, "cat": "TOFU", "gasto": 14433, "alcance": 3652, "impr": 3800, "res": 2319, "conv": 0, "inter": 2786, "visIG": 0, "segIG": 0, "p3": 2776, "thru": 2319, "p50": 350, "p75": 193, "p95": 153, "p100": 140}, {"dia": "2026-10-28", "ci": 0, "cat": "TOFU", "gasto": 17541, "alcance": 3131, "impr": 3131, "res": 2641, "conv": 0, "inter": 2837, "visIG": 0, "segIG": 0, "p3": 2823, "thru": 2641, "p50": 228, "p75": 167, "p95": 145, "p100": 135}, {"dia": "2026-10-29", "ci": 0, "cat": "TOFU", "gasto": 14582, "alcance": 2925, "impr": 2994, "res": 2130, "conv": 0, "inter": 2470, "visIG": 0, "segIG": 0, "p3": 2458, "thru": 2130, "p50": 231, "p75": 146, "p95": 117, "p100": 109}], "diario": [{"dia": "2026-10-01", "gasto": 0, "alcance": 0, "impr": 0, "conv": 0, "vis": 0, "clics": 0, "visIG": 0, "segIG": 0, "p3": 0, "thru": 0, "p50": 0, "p75": 0, "p95": 0, "p100": 0, "sinFila": true}, {"dia": "2026-10-02", "gasto": 0, "alcance": 0, "impr": 0, "conv": 0, "vis": 0, "clics": 0, "visIG": 0, "segIG": 0, "p3": 0, "thru": 0, "p50": 0, "p75": 0, "p95": 0, "p100": 0, "sinFila": true}, {"dia": "2026-10-03", "gasto": 0, "alcance": 0, "impr": 0, "conv": 0, "vis": 0, "clics": 0, "visIG": 0, "segIG": 0, "p3": 0, "thru": 0, "p50": 0, "p75": 0, "p95": 0, "p100": 0, "sinFila": true}, {"dia": "2026-10-04", "gasto": 0, "alcance": 0, "impr": 0, "conv": 0, "vis": 0, "clics": 0, "visIG": 0, "segIG": 0, "p3": 0, "thru": 0, "p50": 0, "p75": 0, "p95": 0, "p100": 0, "sinFila": true}, {"dia": "2026-10-05", "gasto": 0, "alcance": 0, "impr": 0, "conv": 0, "vis": 0, "clics": 0, "visIG": 0, "segIG": 0, "p3": 0, "thru": 0, "p50": 0, "p75": 0, "p95": 0, "p100": 0, "sinFila": true}, {"dia": "2026-10-06", "gasto": 75129, "alcance": 2456, "impr": 5156, "conv": 18, "vis": 5127, "clics": 40, "visIG": 11, "segIG": 0, "p3": 559, "thru": 182, "p50": 123, "p75": 83, "p95": 56, "p100": 44}, {"dia": "2026-10-07", "gasto": 76220, "alcance": 3278, "impr": 6101, "conv": 17, "vis": 6101, "clics": 46, "visIG": 6, "segIG": 0, "p3": 817, "thru": 260, "p50": 162, "p75": 111, "p95": 64, "p100": 51}, {"dia": "2026-10-08", "gasto": 68689, "alcance": 2999, "impr": 5229, "conv": 13, "vis": 5181, "clics": 40, "visIG": 14, "segIG": 1, "p3": 612, "thru": 202, "p50": 112, "p75": 80, "p95": 41, "p100": 36}, {"dia": "2026-10-09", "gasto": 83242, "alcance": 10414, "impr": 12696, "conv": 19, "vis": 11706, "clics": 82, "visIG": 16, "segIG": 4, "p3": 1320, "thru": 413, "p50": 275, "p75": 84, "p95": 46, "p100": 40}, {"dia": "2026-10-10", "gasto": 3462, "alcance": 218, "impr": 250, "conv": 1, "vis": 246, "clics": 2, "visIG": 0, "segIG": 0, "p3": 28, "thru": 7, "p50": 5, "p75": 1, "p95": 1, "p100": 1}, {"dia": "2026-10-11", "gasto": 3, "alcance": 1, "impr": 1, "conv": 0, "vis": 0, "clics": 0, "visIG": 0, "segIG": 0, "p3": 0, "thru": 0, "p50": 0, "p75": 0, "p95": 0, "p100": 0}, {"dia": "2026-10-12", "gasto": 101463, "alcance": 9490, "impr": 12077, "conv": 20, "vis": 11644, "clics": 89, "visIG": 9, "segIG": 0, "p3": 1262, "thru": 363, "p50": 243, "p75": 114, "p95": 65, "p100": 50}, {"dia": "2026-10-13", "gasto": 98074, "alcance": 4523, "impr": 7841, "conv": 20, "vis": 7682, "clics": 51, "visIG": 21, "segIG": 4, "p3": 776, "thru": 218, "p50": 122, "p75": 85, "p95": 48, "p100": 44}, {"dia": "2026-10-14", "gasto": 87413, "alcance": 6182, "impr": 9042, "conv": 16, "vis": 8531, "clics": 56, "visIG": 17, "segIG": 1, "p3": 945, "thru": 275, "p50": 162, "p75": 100, "p95": 61, "p100": 51}, {"dia": "2026-10-15", "gasto": 77265, "alcance": 4707, "impr": 7691, "conv": 14, "vis": 7551, "clics": 45, "visIG": 5, "segIG": 0, "p3": 699, "thru": 194, "p50": 123, "p75": 87, "p95": 59, "p100": 46}, {"dia": "2026-10-16", "gasto": 58824, "alcance": 4282, "impr": 6446, "conv": 4, "vis": 6245, "clics": 35, "visIG": 1, "segIG": 0, "p3": 561, "thru": 127, "p50": 80, "p75": 58, "p95": 32, "p100": 27}, {"dia": "2026-10-17", "gasto": 12193, "alcance": 925, "impr": 1130, "conv": 2, "vis": 1077, "clics": 4, "visIG": 3, "segIG": 0, "p3": 123, "thru": 31, "p50": 15, "p75": 12, "p95": 9, "p100": 5}, {"dia": "2026-10-18", "gasto": 1054, "alcance": 44, "impr": 49, "conv": 0, "vis": 47, "clics": 0, "visIG": 0, "segIG": 0, "p3": 10, "thru": 3, "p50": 1, "p75": 1, "p95": 0, "p100": 0}, {"dia": "2026-10-19", "gasto": 65929, "alcance": 3155, "impr": 4407, "conv": 13, "vis": 4253, "clics": 34, "visIG": 7, "segIG": 3, "p3": 499, "thru": 144, "p50": 82, "p75": 57, "p95": 36, "p100": 27}, {"dia": "2026-10-20", "gasto": 70981, "alcance": 3535, "impr": 5488, "conv": 11, "vis": 5269, "clics": 40, "visIG": 11, "segIG": 2, "p3": 675, "thru": 178, "p50": 110, "p75": 79, "p95": 50, "p100": 41}, {"dia": "2026-10-21", "gasto": 44032, "alcance": 2206, "impr": 3219, "conv": 9, "vis": 3064, "clics": 18, "visIG": 3, "segIG": 1, "p3": 472, "thru": 162, "p50": 114, "p75": 69, "p95": 43, "p100": 30}, {"dia": "2026-10-22", "gasto": 54231, "alcance": 2890, "impr": 4461, "conv": 20, "vis": 4219, "clics": 31, "visIG": 8, "segIG": 1, "p3": 699, "thru": 218, "p50": 126, "p75": 76, "p95": 63, "p100": 48}, {"dia": "2026-10-23", "gasto": 37917, "alcance": 2130, "impr": 3033, "conv": 15, "vis": 2863, "clics": 29, "visIG": 5, "segIG": 0, "p3": 551, "thru": 173, "p50": 114, "p75": 70, "p95": 62, "p100": 48}, {"dia": "2026-10-24", "gasto": 0, "alcance": 0, "impr": 0, "conv": 0, "vis": 0, "clics": 0, "visIG": 0, "segIG": 0, "p3": 0, "thru": 0, "p50": 0, "p75": 0, "p95": 0, "p100": 0, "sinFila": true}, {"dia": "2026-10-25", "gasto": 0, "alcance": 0, "impr": 0, "conv": 0, "vis": 0, "clics": 0, "visIG": 0, "segIG": 0, "p3": 0, "thru": 0, "p50": 0, "p75": 0, "p95": 0, "p100": 0, "sinFila": true}, {"dia": "2026-10-26", "gasto": 29604, "alcance": 1472, "impr": 2285, "conv": 8, "vis": 2223, "clics": 17, "visIG": 2, "segIG": 1, "p3": 292, "thru": 93, "p50": 63, "p75": 41, "p95": 26, "p100": 15}, {"dia": "2026-10-27", "gasto": 0, "alcance": 0, "impr": 0, "conv": 0, "vis": 0, "clics": 0, "visIG": 0, "segIG": 0, "p3": 0, "thru": 0, "p50": 0, "p75": 0, "p95": 0, "p100": 0, "sinFila": true}, {"dia": "2026-10-28", "gasto": 0, "alcance": 0, "impr": 0, "conv": 0, "vis": 0, "clics": 0, "visIG": 0, "segIG": 0, "p3": 0, "thru": 0, "p50": 0, "p75": 0, "p95": 0, "p100": 0, "sinFila": true}, {"dia": "2026-10-29", "gasto": 0, "alcance": 0, "impr": 0, "conv": 0, "vis": 0, "clics": 0, "visIG": 0, "segIG": 0, "p3": 0, "thru": 0, "p50": 0, "p75": 0, "p95": 0, "p100": 0, "sinFila": true}], "objetivo": {"OUTCOME_SALES": {"gasto": 1045725, "alcance": 33425, "clics": 659, "visIG": 139, "segIG": 18}, "OUTCOME_AWARENESS": {"gasto": 98368, "alcance": 23294, "clics": 25, "visIG": 0, "segIG": 0}}, "region": [{"region": "Distrito Especial", "gasto": 465269, "alcance": 9437, "impr": 41556, "clics": 252, "inter": 4166, "segIG": 7}, {"region": "Antioquia", "gasto": 229864, "alcance": 5805, "impr": 18320, "clics": 137, "inter": 2999, "segIG": 3}, {"region": "Atlantico", "gasto": 101559, "alcance": 1628, "impr": 12036, "clics": 89, "inter": 1577, "segIG": 3}, {"region": "Cundinamarca", "gasto": 91237, "alcance": 2245, "impr": 9007, "clics": 52, "inter": 896, "segIG": 0}, {"region": "Santander", "gasto": 62195, "alcance": 1150, "impr": 5538, "clics": 40, "inter": 770, "segIG": 4}, {"region": "Bolivar", "gasto": 41107, "alcance": 860, "impr": 5832, "clics": 46, "inter": 744, "segIG": 1}, {"region": "Norte de Santander", "gasto": 32229, "alcance": 551, "impr": 2678, "clics": 27, "inter": 393, "segIG": 0}, {"region": "Meta", "gasto": 12362, "alcance": 267, "impr": 956, "clics": 7, "inter": 140, "segIG": 0}, {"region": "Tolima", "gasto": 4666, "alcance": 131, "impr": 418, "clics": 5, "inter": 59, "segIG": 0}, {"region": "Magdalena", "gasto": 3329, "alcance": 58, "impr": 200, "clics": 3, "inter": 30, "segIG": 0}, {"region": "Táchira", "gasto": 1822, "alcance": 17, "impr": 44, "clics": 1, "inter": 6, "segIG": 0}, {"region": "Boyaca", "gasto": 61, "alcance": 5, "impr": 14, "clics": 0, "inter": 2, "segIG": 0}, {"region": "Amazonas", "gasto": 18, "alcance": 2, "impr": 2, "clics": 0, "inter": 0, "segIG": 0}, {"region": "Caldas", "gasto": 7, "alcance": 1, "impr": 1, "clics": 0, "inter": 1, "segIG": 0}]};
+const MIN='2026-10-01', MAX_REPORT='2026-10-29';
+let sel = new Set(['TOFU','PRODUCTS','PACK']);
+let selChip = 'ALL';
+let charts = {};
+
+const css = n => getComputedStyle(document.documentElement).getPropertyValue(n).trim();
+const nf = new Intl.NumberFormat('es-CO',{maximumFractionDigits:0});
+const cop = v => v==null||!isFinite(v) ? 'n/d' : '$'+nf.format(Math.round(v))+' COP';
+const copS = v => '$'+nf.format(Math.round(v));
+const int = v => v==null||!isFinite(v) ? 'n/d' : nf.format(Math.round(v));
+const pct = v => v==null||!isFinite(v) ? 'n/d' : v.toFixed(1).replace('.',',')+' %';
+const dec2 = v => v==null||!isFinite(v) ? 'n/d' : v.toFixed(2).replace('.',',');
+const div = (a,b) => b ? a/b : null;
+const sum = (L,k) => L.reduce((s,x)=>s+(x[k]||0),0);
+const dLabel = s => { const [y,m,d]=s.split('-'); return d+'-oct'; };
+
+// Plugins: data labels on bars/points and a horizontal reference line
+const valueLabels = {
+  id:'valueLabels',
+  afterDatasetsDraw(chart){
+    const {ctx} = chart;
+    chart.data.datasets.forEach((ds,i)=>{
+      if(!ds.valueLabel) return;
+      const meta = chart.getDatasetMeta(i); if(meta.hidden) return;
+      ctx.save(); ctx.font = (chart.width<560?'9px':'11px')+' system-ui,sans-serif';
+      ctx.fillStyle = css('--text'); ctx.textAlign='center'; ctx.textBaseline='bottom';
+      meta.data.forEach((el,j)=>{
+        const t = ds.valueLabel(ds.data[j], j); if(t==null) return;
+        if(chart.options.indexAxis==='y'){ ctx.textAlign='left'; ctx.textBaseline='middle'; ctx.fillText(t, el.x+4, el.y); }
+        else ctx.fillText(t, el.x, el.y-3);
+      });
+      ctx.restore();
+    });
+  }
+};
+// Neon halo around bars and lines
+const neonGlow = {
+  id:'neonGlow',
+  beforeDatasetDraw(chart, {meta}){
+    const ds = chart.data.datasets[meta.index], c = ds.borderColor && ds.type==='line' ? ds.borderColor : ds.backgroundColor;
+    const ctx = chart.ctx; ctx.save();
+    ctx.shadowColor = Array.isArray(c) ? c[c.length-1] : c; ctx.shadowBlur = ds.type==='line' ? 12 : 10;
+  },
+  afterDatasetDraw(chart){ chart.ctx.restore(); }
+};
+Chart.register(valueLabels, neonGlow);
+
+// HTML tooltip: drawn outside the canvas, above the finger on touch, and kept 3 s after lifting the finger
+const tipEl = document.getElementById('chartTip');
+const TIP_HOLD_MS = 3000;
+let tipTouch = false, tipHolding = false, tipTimer = null;
+const escHtml = s => String(s).replace(/[&<>]/g, ch => ({'&':'&amp;','<':'&lt;','>':'&gt;'}[ch]));
+function hideTip(){ tipEl.style.opacity = 0; tipEl.style.visibility = 'hidden'; }
+function extTip({chart, tooltip}){
+  if(tooltip.opacity === 0){ if(!tipHolding) hideTip(); return; }
+  const lines = [];
+  (tooltip.body||[]).forEach((b,i)=>b.lines.filter(Boolean).forEach(l=>lines.push(`<div class="tl"><i style="background:${tooltip.labelColors[i].backgroundColor}"></i>${escHtml(l)}</div>`)));
+  (tooltip.afterBody||[]).filter(Boolean).forEach(l=>lines.push(`<div class="tl">${escHtml(l)}</div>`));
+  tipEl.innerHTML = (tooltip.title||[]).filter(Boolean).map(t=>`<div class="tt">${escHtml(t)}</div>`).join('') + lines.join('');
+  tipEl.style.visibility = 'visible'; tipEl.style.opacity = 1;
+  const r = chart.canvas.getBoundingClientRect(), w = tipEl.offsetWidth, h = tipEl.offsetHeight;
+  const gap = tipTouch ? 56 : 14;                                   // leave room for the finger on touch screens
+  const px = r.left + scrollX + tooltip.caretX, py = r.top + scrollY + tooltip.caretY;
+  let top = py - h - gap; if(top < scrollY + 8) top = py + gap;     // not enough room above: show below
+  const left = Math.min(Math.max(px - w/2, scrollX + 8), scrollX + vw() - w - 8);
+  tipEl.style.left = left + 'px'; tipEl.style.top = top + 'px';
+}
+function bindTipTouch(canvas){
+  canvas.addEventListener('pointerdown', e => { tipTouch = e.pointerType !== 'mouse'; });
+  canvas.addEventListener('touchstart', () => { clearTimeout(tipTimer); tipHolding = false; tipTouch = true; }, {passive:true});
+  canvas.addEventListener('touchend', () => {
+    tipHolding = true; clearTimeout(tipTimer);
+    tipTimer = setTimeout(() => {
+      tipHolding = false; hideTip();
+      const ch = Chart.getChart(canvas);
+      if(ch){ ch.setActiveElements([]); ch.tooltip.setActiveElements([], {x:0,y:0}); ch.update('none'); }
+    }, TIP_HOLD_MS);
+  }, {passive:true});
+}
+
+function baseOpts(){
+  Chart.defaults.color = css('--muted');
+  Chart.defaults.borderColor = css('--line');
+  Chart.defaults.font.family = 'system-ui,-apple-system,"Segoe UI",Roboto,sans-serif';
+  Object.assign(Chart.defaults.plugins.tooltip,{enabled:false, external:extTip});
+  return {responsive:true, maintainAspectRatio:false, animation:false, clip:false,
+    layout:{padding:{right:8,top:14,bottom:4}},
+    interaction:{mode:'index',intersect:false},
+    plugins:{legend:{position:'top',labels:{usePointStyle:true,boxWidth:8,padding:14,color:'#cfeaff'}}}};
+}
+// Layout width as CSS sees it (innerWidth grows when a mobile browser zooms out)
+const vw = () => document.documentElement.clientWidth;
+const isPhone = () => matchMedia('(max-width:640px)').matches;
+const xTicks = () => ({autoSkip:true, maxRotation:45, minRotation:0, maxTicksLimit: vw()<500?8:vw()<800?12:24});
+const axTitle = (t,color) => ({display:true,text:t,color:color||css('--muted'),font:{weight:'600'}});
+
+// ---------- Selection ----------
+// All metrics come from the campaign × day rows (D.cd), so every card and chart follows both filters
+const isFullRange = () => d1.value<=MIN && d2.value>=MAX_REPORT;
+const salesAll = () => sel.has('PRODUCTS') && sel.has('PACK');
+const salesAny = () => sel.has('PRODUCTS') || sel.has('PACK');
+const inRange = r => r.dia>=d1.value && r.dia<=d2.value;
+const selRows = () => D.cd.filter(r=>sel.has(r.cat) && inRange(r));
+const SUMK = ['gasto','impr','alcance','conv','res','p3','thru','p50','p75','p95','p100','inter','visIG','segIG'];
+function totals(R){ const A={}; SUMK.forEach(k=>A[k]=sum(R,k)); return A; }
+function byCampaign(R){
+  const m = new Map();
+  R.forEach(r=>{
+    if(!m.has(r.ci)){ const meta=D.campanas[r.ci]; m.set(r.ci, Object.assign({}, meta, {alcanceP:meta.alcance}, totals([]))); }
+    const c=m.get(r.ci); SUMK.forEach(k=>c[k]+=r[k]||0);
+  });
+  return [...m.values()].filter(c=>c.impr>0||c.gasto>0);
+}
+function dailySeries(R){
+  const g={};
+  R.forEach(r=>{ const o=g[r.dia]||(g[r.dia]={gasto:0,alcance:0,conv:0,res:0}); o.gasto+=r.gasto; o.alcance+=r.alcance; o.conv+=r.conv; o.res+=r.res; });
+  return D.diario.map(x=>x.dia).filter(d=>d>=d1.value && d<=d2.value).map(d=>Object.assign({dia:d,gasto:0,alcance:0,conv:0,res:0}, g[d]));
+}
+function agg(){
+  const R=selRows(), A=totals(R), full=isFullRange(), tofu=sel.has('TOFU');
+  const salesR=R.filter(r=>r.cat!=='TOFU'); A.gastoConv=sum(salesR,'gasto');
+  // Meta's deduplicated reach only exists for the whole period (1–28 oct); with a partial range the daily reach is summed
+  if(full){
+    const T=D.objetivo.OUTCOME_AWARENESS.alcance, S=D.objetivo.OUTCOME_SALES.alcance;
+    if(tofu && !salesAny()){ A.alcance=T; A.aprox=false; }
+    else if(!tofu && salesAll()){ A.alcance=S; A.aprox=false; }
+    else { A.alcance=(tofu?T:0)+(salesAll()?S:sum(byCampaign(salesR),'alcanceP')); A.aprox=true; }
+  } else A.aprox = R.length>1;
+  // Link clicks: per day only for all sales campaigns together; for TOFU only for the whole period
+  const tofuClics = tofu ? (full ? D.objetivo.OUTCOME_AWARENESS.clics : null) : 0;
+  const salesClics = !salesAny() ? 0 : salesAll() ? sum(D.diario.filter(inRange),'clics') : null;
+  A.clics = tofuClics==null || salesClics==null ? null : tofuClics + salesClics;
+  A.clicsImpr = A.impr;
+  return A;
+}
+
+// ---------- KPI cards ----------
+function kpiDefs(A, daily){
+  const ap = A.aprox ? 'Aproximado (puede contar personas repetidas)' : 'Personas únicas (1–28 oct)';
+  const hook = div(A.p3,A.impr)*100, cons = div(A.thru,A.p3)*100, ce = A.clics?div(A.conv,A.clics)*100:null;
+  const tg = (v,min,txt) => v==null||!isFinite(v)?'':`<span class="tag ${v>=min?'ok':'bad'}">${txt}</span>`;
+  return [
+    {b:'Inversión', c:'--gasto', items:[
+      ['Importe gastado', cop(A.gasto)],
+      ['CPM', cop(div(A.gasto,A.impr)*1000), 'Costo por 1.000 impresiones'],
+      ['Costo por conversación', A.conv?cop(div(A.gastoConv,A.conv)):'n/d', 'Gasto de campañas de ventas ÷ conversaciones'],
+    ]},
+    {b:'Alcance y entrega', c:'--alcance', items:[
+      ['Alcance', int(A.alcance), ap],
+      ['Impresiones', int(A.impr)],
+      ['CTR (enlace)', A.clics?pct(div(A.clics,A.clicsImpr)*100):'n/d', A.clics==null?'No disponible para esta selección':'Clics ÷ impresiones'],
+    ]},
+    {b:'Video', c:'--hook', items:[
+      ['Reproducciones al 50 %', int(A.p50)],
+      ['Reproducciones al 75 %', int(A.p75)],
+      ['Reproducciones al 95 %', int(A.p95)],
+      ['Reproducciones al 100 %', int(A.p100)],
+      ['% Hook '+tg(hook,30,'meta ≥30 %'), pct(hook), '3 s ÷ impresiones'],
+      ['% Consumo '+tg(cons,15,'meta ≥15 %'), pct(cons), 'ThruPlays ÷ reproducciones de 3 s'],
+    ]},
+    {b:'Conversaciones y resultados', c:'--conv', items:[
+      ['Conversaciones con mensajes iniciadas', int(A.conv), 'Resultado de las campañas de ventas'],
+      ['Tasa de conversión efectiva '+tg(ce,40,'meta ≥40 %'), pct(ce), 'Conversaciones ÷ clics en el enlace'],
+    ]},
+    {b:'Otras métricas', c:'--res', items:[
+      ['Tasa de conversión a seguidores', pct(div(A.segIG,A.visIG)*100), 'Seguimientos ÷ visitas al perfil'],
+    ]},
+  ];
+}
+// On phones the blocks become tabs (tap or swipe) with a compact 2-column grid
+let kTab = 0;
+const KTAB_NAMES = ['Inversión','Alcance','Video','Conversiones','Otras'];
+function renderKPIs(A){
+  const host = document.getElementById('kpiBlocks'), defs = kpiDefs(A);
+  kTab = Math.min(kTab, defs.length-1);
+  host.innerHTML =
+    '<div class="ktabs" role="tablist">'+defs.map((b,i)=>`<button role="tab" data-k="${i}" class="${i===kTab?'on':''}" style="--tab:var(${b.c})" aria-selected="${i===kTab}"><i style="background:var(${b.c});color:var(${b.c})"></i>${KTAB_NAMES[i]||b.b} <span>${b.items.length}</span></button>`).join('')+'</div>'+
+    defs.map((b,i)=>`<div class="block${i===kTab?' show':''}" role="tabpanel"><h3><i style="background:var(${b.c});color:var(${b.c})"></i>${b.b}</h3><div class="kpis">`+
+      b.items.map(([l,v,n],j)=>`<div class="kpi${i===0&&j===0?' hero':''}" style="--accent:var(${l==='Importe gastado'?'--gasto':b.c})"><div class="l">${l}</div><div class="v">${String(v).replace(/ COP$/,'<small>COP</small>')}</div>${n?`<div class="n">${n}</div>`:''}</div>`).join('')+'</div></div>').join('')+
+    '<div class="kdots">'+defs.map((b,i)=>`<b class="${i===kTab?'on':''}"></b>`).join('')+'</div>';
+}
+function showKTab(i){
+  const host = document.getElementById('kpiBlocks'), n = host.querySelectorAll('.block').length;
+  kTab = (i+n)%n;
+  host.querySelectorAll('.block').forEach((b,j)=>b.classList.toggle('show',j===kTab));
+  host.querySelectorAll('.ktabs button').forEach((b,j)=>{ b.classList.toggle('on',j===kTab); b.setAttribute('aria-selected',j===kTab); if(j===kTab) b.scrollIntoView({block:'nearest',inline:'center',behavior:'smooth'}); });
+  host.querySelectorAll('.kdots b').forEach((b,j)=>b.classList.toggle('on',j===kTab));
+}
+
+// ---------- Charts ----------
+function mk(id, cfg){ if(charts[id]) charts[id].destroy(); charts[id] = new Chart(document.getElementById(id), cfg); }
+function empty(id, msg){ const e=document.getElementById(id); e.style.display = msg?'flex':'none'; e.textContent = msg||''; }
+
+function chart1(C){
+  const rows = C.map(c=>({l:c.corto,n:c.nombre,h:div(c.p3,c.impr)*100,k:div(c.thru,c.p3)*100})).sort((a,b)=>b.h-a.h);
+  const o = baseOpts(), horiz = isPhone();   // phones: horizontal bars so campaign names stay readable
+  const val = c => horiz ? c.parsed.x : c.parsed.y;
+  o.plugins.tooltip = {callbacks:{title:i=>rows[i[0].dataIndex].n, label:c=>`${c.dataset.label}: ${pct(val(c))}`}};
+  const catAx = {grid:{display:false},title:axTitle('Campaña')}, pctAx = {min:0,max:100,ticks:{callback:v=>v+' %'},title:axTitle('Porcentaje (%)')};
+  if(horiz){ o.indexAxis='y'; o.layout.padding.right=34; catAx.ticks={autoSkip:false,font:{size:10}}; catAx.title.display=false; o.scales={x:pctAx,y:catAx}; }
+  else { catAx.ticks=xTicks(); o.scales={x:catAx,y:pctAx}; }
+  document.getElementById('c1').parentElement.classList.toggle('xtall', horiz);
+  mk('c1',{type:'bar',data:{labels:rows.map(r=>r.l),datasets:[
+    {label:'% Hook',data:rows.map(r=>r.h),backgroundColor:css('--hook'),borderRadius:4,valueLabel:v=>v.toFixed(1).replace('.',',')},
+    {label:'% Consumo',data:rows.map(r=>r.k),backgroundColor:css('--consumo'),borderRadius:4,valueLabel:v=>v.toFixed(1).replace('.',',')},
+    {type:'line',label:'Umbral mínimo de consumo (15 %)',data:rows.map(()=>15),borderColor:css('--bad'),backgroundColor:css('--bad'),borderDash:[6,4],borderWidth:1.5,pointRadius:0,pointHoverRadius:0,pointStyle:'line'}]},options:o});
+}
+function chart2(C){
+  const v = [sum(C,'p50'),sum(C,'p75'),sum(C,'p95'),sum(C,'p100')], base=v[0];
+  const o = baseOpts(); o.plugins.legend={display:false};
+  o.plugins.tooltip={callbacks:{label:c=>`${int(c.parsed.y)} reproducciones · ${pct(div(c.parsed.y,base)*100)} del nivel 50 %`}};
+  o.scales={x:{grid:{display:false},title:axTitle('Nivel de reproducción del video')},y:{beginAtZero:true,ticks:{callback:v=>int(v)},title:axTitle('Reproducciones (cantidad)')}};
+  mk('c2',{type:'bar',data:{labels:['50 %','75 %','95 %','100 %'],datasets:[{label:'Reproducciones',data:v,
+    backgroundColor:[css('--lvl'),css('--lvl'),css('--lvlTop'),css('--lvlTop')],borderRadius:6,
+    valueLabel:(x)=>`${int(x)} · ${pct(div(x,base)*100)}`}]},options:o});
+  const sw = c=>`<span class="sw" style="background:var(${c})"></span>`;
+  document.getElementById('tRmk').innerHTML = `<thead><tr><th>Prioridad</th><th>Audiencia sugerida</th><th class="num">Tamaño aprox.</th><th class="num">% del nivel 50 %</th></tr></thead><tbody>
+    <tr class="p1"><td>${sw('--lvlTop')}Prioridad 1</td><td>Vieron el 95–100 % (mayor interés)</td><td class="num">${int(v[2])}</td><td class="num">${pct(div(v[2],base)*100)}</td></tr>
+    <tr><td>${sw('--lvl')}Prioridad 2</td><td>Vieron el 75 %</td><td class="num">${int(v[1])}</td><td class="num">${pct(div(v[1],base)*100)}</td></tr>
+    <tr><td>${sw('--lvl')}Prioridad 3</td><td>Vieron el 50 %</td><td class="num">${int(v[0])}</td><td class="num">100,0 %</td></tr></tbody>`;
+}
+function dualDaily(id, R, lineKey, lineLabel, lineColorVar, lineAxis, tipFn){
+  const o = baseOpts(), g=css('--gasto'), lc=css(lineColorVar);
+  o.plugins.tooltip={callbacks:{title:i=>dLabel(R[i[0].dataIndex].dia), label:()=>null, afterBody:i=>tipFn(R[i[0].dataIndex])}};
+  o.scales={x:{ticks:xTicks(),grid:{display:false},title:axTitle('Fecha (octubre 2026)')},
+    y:{beginAtZero:true,position:'left',ticks:{color:g,callback:v=>copS(v)},title:axTitle('Gasto (COP)',g)},
+    y1:{beginAtZero:true,position:'right',grid:{drawOnChartArea:false},ticks:{color:lc,callback:v=>int(v)},title:axTitle(lineAxis,lc)}};
+  mk(id,{data:{labels:R.map(r=>dLabel(r.dia)),datasets:[
+    {type:'line',label:lineLabel,data:R.map(r=>r[lineKey]),borderColor:lc,backgroundColor:lc,yAxisID:'y1',tension:.3,pointRadius:3,borderWidth:2},
+    {type:'bar',label:'Gasto',data:R.map(r=>r.gasto),backgroundColor:g,borderRadius:4,yAxisID:'y'}]},options:o});
+}
+function chart5(C){
+  const rows=[...C].sort((a,b)=>b.gasto-a.gasto), mixed=new Set(rows.map(r=>r.tipo)).size>1;
+  const o=baseOpts(), g=css('--gasto'), rc=css('--res');
+  o.plugins.tooltip={callbacks:{title:i=>rows[i[0].dataIndex].nombre,label:()=>null,afterBody:i=>{const r=rows[i[0].dataIndex];
+    return [`Gasto: ${cop(r.gasto)}`,`Resultados: ${int(r.res)}`,`Tipo: ${r.tipo}`,`Costo por resultado: ${cop(r.gasto/r.res)}`];}}};
+  o.scales={x:{ticks:{autoSkip:false,maxRotation:60,minRotation:isPhone()?45:0,font:{size:isPhone()?10:12}},grid:{display:false},title:axTitle('Campaña (de mayor a menor gasto)')},
+    y:{beginAtZero:true,ticks:{color:g,callback:v=>copS(v)},title:axTitle('Gasto (COP)',g)},
+    y1:{type:mixed?'logarithmic':'linear',beginAtZero:!mixed,position:'right',grid:{drawOnChartArea:false},
+        ticks:{color:rc,callback:v=>{ if(!mixed) return int(v); const l=Math.log10(v); return Math.abs(l-Math.round(l))<1e-9?int(v):''; }},
+        title:axTitle(mixed?'Resultados (escala log.)':'Resultados (cantidad)',rc)}};
+  mk('c5',{data:{labels:rows.map(r=>r.corto),datasets:[
+    {type:'line',label:'Resultados',data:rows.map(r=>r.res),borderColor:rc,backgroundColor:rc,yAxisID:'y1',pointRadius:5,borderWidth:2,tension:0,valueLabel:v=>int(v)},
+    {type:'bar',label:'Gasto',data:rows.map(r=>r.gasto),backgroundColor:g,borderRadius:4,yAxisID:'y'}]},options:o});
+}
+function chart6(){
+  const R=[...D.region].sort((a,b)=>b.gasto-a.gasto), g=css('--gasto'), o=baseOpts();
+  o.indexAxis='y'; o.plugins.legend={display:false}; o.interaction={mode:'nearest',intersect:true,axis:'y'};
+  o.layout.padding.right=70;
+  o.plugins.tooltip={callbacks:{label:c=>{const r=R[c.dataIndex];return [`Gasto: ${cop(r.gasto)}`,`Alcance: ${int(r.alcance)}`,`Clics: ${int(r.clics)}`];}}};
+  o.scales={x:{beginAtZero:true,ticks:{color:g,callback:v=>copS(v),maxTicksLimit:5},title:axTitle('Gasto (COP)',g)},y:{grid:{display:false},title:axTitle('Departamento')}};
+  const tot=sum(R,'gasto');
+  mk('c6',{type:'bar',data:{labels:R.map(r=>r.region),datasets:[{label:'Gasto',data:R.map(r=>r.gasto),backgroundColor:g,borderRadius:4,valueLabel:v=>pct(v/tot*100)}]},options:o});
+  document.getElementById('tReg').innerHTML='<thead><tr><th>Departamento</th><th class="num">Gasto</th><th class="num">% gasto</th><th class="num">Alcance</th><th class="num">Impresiones</th><th class="num">Clics</th><th class="num">CTR</th><th class="num">Costo/clic</th><th class="num">CPM</th></tr></thead><tbody>'+
+    R.map(r=>`<tr><td>${r.region}</td><td class="num">${cop(r.gasto)}</td><td class="num">${pct(r.gasto/tot*100)}</td><td class="num">${int(r.alcance)}</td><td class="num">${int(r.impr)}</td><td class="num">${int(r.clics)}</td><td class="num">${r.clics?pct(r.clics/r.impr*100):'—'}</td><td class="num">${r.clics?cop(r.gasto/r.clics):'—'}</td><td class="num">${cop(r.gasto/r.impr*1000)}</td></tr>`).join('')+
+    `</tbody><tfoot><tr><td><b>Total</b></td><td class="num"><b>${cop(tot)}</b></td><td class="num">100,0 %</td><td class="num">≈${int(sum(R,'alcance'))}</td><td class="num">${int(sum(R,'impr'))}</td><td class="num">${int(sum(R,'clics'))}</td><td class="num">${pct(sum(R,'clics')/sum(R,'impr')*100)}</td><td class="num">${cop(tot/sum(R,'clics'))}</td><td class="num">${cop(tot/sum(R,'impr')*1000)}</td></tr></tfoot>`;
+}
+function catTable(){
+  const R=D.cd.filter(inRange), tot=sum(R,'gasto'), full=isFullRange();
+  const groups=[['TOFU',r=>r.cat==='TOFU',D.objetivo.OUTCOME_AWARENESS.alcance,['TOFU']],
+    ['MOFU (PRODUCTS + PACK)',r=>r.cat!=='TOFU',D.objetivo.OUTCOME_SALES.alcance,['PRODUCTS','PACK']],
+    ['PRODUCTS',r=>r.cat==='PRODUCTS',null,['PRODUCTS']],['PACK',r=>r.cat==='PACK',null,['PACK']]];
+  document.getElementById('tCat').innerHTML='<thead><tr><th>Categoría</th><th class="num">Campañas</th><th class="num">Inversión</th><th class="num">% inversión</th><th class="num">Alcance</th><th class="num">Resultados</th><th>Tipo de resultado</th><th class="num">Costo por resultado</th><th class="num">% Hook</th><th class="num">% Consumo</th></tr></thead><tbody>'+
+    groups.map(([n,f,exact,keys])=>{
+      const G=R.filter(f), C=byCampaign(G), g=sum(G,'gasto'), r=sum(G,'res');
+      const isExact = full && exact!=null, a = isExact ? exact : full ? sum(C,'alcanceP') : sum(G,'alcance');
+      const on=keys.every(k=>sel.has(k)), tipo=(C[0]||D.campanas.find(c=>keys.includes(c.cat))).tipo;
+      return `<tr class="${on?'':'dim'}"><td><b>${n}</b></td><td class="num" data-l="Campañas">${C.length}</td><td class="num" data-l="Inversión">${cop(g)}</td><td class="num" data-l="% inversión">${pct(div(g,tot)*100)}</td><td class="num" data-l="Alcance">${isExact?'':'≈'}${int(a)}</td><td class="num" data-l="Resultados">${int(r)}</td><td data-l="Tipo de resultado">${tipo}</td><td class="num" data-l="Costo por resultado">${r?cop(g/r):'n/d'}</td><td class="num" data-l="% Hook">${pct(div(sum(G,'p3'),sum(G,'impr'))*100)}</td><td class="num" data-l="% Consumo">${pct(div(sum(G,'thru'),sum(G,'p3'))*100)}</td></tr>`;}).join('')+'</tbody>';
+}
+function strip(id, A, withReach){
+  document.getElementById(id).innerHTML =
+    `<span class="m"><b>${int(A.conv)}</b> mensajes recibidos</span><span><b>${copS(A.gasto)}</b> invertidos</span>`+
+    `<span><b>${A.conv?copS(A.gastoConv/A.conv):'n/d'}</b> por mensaje</span>`+
+    (withReach?`<span><b>${A.aprox?'≈':''}${int(A.alcance)}</b> personas alcanzadas</span>`:'');
+}
+
+function render(){
+  // Chips
+  document.querySelectorAll('.chip').forEach(b=>{ const on=b.dataset.c===selChip; b.classList.toggle('on',on); b.setAttribute('aria-pressed',on); });
+  const full=isFullRange(), R=selRows(), C=byCampaign(R), A=agg();
+  const selName = {ALL:'Todas las categorías', MOFU:'MOFU (PRODUCTS + PACK)'}[selChip] || selChip;
+  document.getElementById('selInfo').textContent = `Mostrando: ${selName} · ${C.length} campaña${C.length===1?'':'s'} · ${full?'1 al 29 de octubre':dLabel(d1.value)+' a '+dLabel(d2.value)}`;
+  document.getElementById('notice').innerHTML = full ? '' : 'Rango de fechas parcial: el alcance se suma día a día y puede contar personas repetidas.';
+  renderKPIs(A);
+  chart1(C); chart2(C); chart5(C);
+  const S=dailySeries(R), none = R.length ? '' : 'No hay datos para esta selección en el rango de fechas elegido.';
+  empty('e3',none);
+  empty('e4', none || (A.conv===0 ? 'Esta selección no genera mensajes: las campañas TOFU optimizan por reproducciones de video (ThruPlay).' : ''));
+  strip('ss3',A,true); strip('ss4',A,false);
+  dualDaily('c3',S,'alcance','Alcance','--alcance','Alcance (personas)',r=>[`Gasto: ${cop(r.gasto)}`,`Alcance: ${int(r.alcance)} personas`,`Mensajes recibidos: ${int(r.conv)}`,`Costo por 1.000 alcanzados: ${r.alcance?cop(r.gasto/r.alcance*1000):'n/d'}`]);
+  dualDaily('c4',S,'conv','Mensajes recibidos','--conv','Mensajes (cantidad)',r=>[`Gasto: ${cop(r.gasto)}`,`Mensajes recibidos: ${int(r.conv)}`,`Costo por mensaje: ${r.conv?cop(r.gasto/r.conv):'n/d'}`]);
+  catTable(); chart6();
+}
+
+const d1=document.getElementById('d1'), d2=document.getElementById('d2');
+document.getElementById('chips').addEventListener('click',e=>{
+  const c=e.target.dataset && e.target.dataset.c; if(!c) return;
+  // Single selection: each click shows only the clicked option
+  selChip=c;
+  sel=new Set(c==='ALL' ? ['TOFU','PRODUCTS','PACK'] : c==='MOFU' ? ['PRODUCTS','PACK'] : [c]);
+  render();
+});
+[d1,d2].forEach(i=>i.addEventListener('change',()=>{ if(d1.value>d2.value){ const t=d1.value; d1.value=d2.value; d2.value=t; } render(); }));
+document.getElementById('dReset').addEventListener('click',()=>{d1.value=MIN; d2.value='2026-10-31'; render();});
+// Re-render only when the width changes (mobile browsers fire resize while scrolling as the URL bar hides)
+let rt, lastW = vw();
+window.addEventListener('resize',()=>{ if(vw()===lastW) return; lastW=vw(); clearTimeout(rt); rt=setTimeout(render,250); });
+['c1','c2','c3','c4','c5','c6'].forEach(id=>bindTipTouch(document.getElementById(id)));
+const kHost = document.getElementById('kpiBlocks');
+kHost.addEventListener('click', e => { const b=e.target.closest('.ktabs button'); if(b) showKTab(+b.dataset.k); });
+let kx=null, ky=null;
+kHost.addEventListener('touchstart', e => { if(e.target.closest('.ktabs')) { kx=null; return; } kx=e.touches[0].clientX; ky=e.touches[0].clientY; }, {passive:true});
+kHost.addEventListener('touchend', e => {
+  if(kx==null || !isPhone()) return;
+  const dx=e.changedTouches[0].clientX-kx, dy=e.changedTouches[0].clientY-ky; kx=null;
+  if(Math.abs(dx)>50 && Math.abs(dx)>Math.abs(dy)*1.5) showKTab(kTab + (dx<0?1:-1));
+}, {passive:true});
+
+// Sidebar: mobile drawer + highlight the section in view
+const side=document.getElementById('side'), backdrop=document.getElementById('backdrop');
+const toggleMenu = open => { side.classList.toggle('open',open); backdrop.classList.toggle('open',open); document.body.classList.toggle('lock',open); };
+document.getElementById('menuBtn').addEventListener('click',()=>toggleMenu(true));
+backdrop.addEventListener('click',()=>toggleMenu(false));
+const navLinks=[...document.querySelectorAll('#nav a')];
+navLinks.forEach(a=>a.addEventListener('click',()=>{ toggleMenu(false); if(a.getAttribute('href')==='#s-find') document.getElementById('findDrop').open=true; }));
+const secs=navLinks.map(a=>document.querySelector(a.getAttribute('href')));
+function markNav(){
+  let cur=0; secs.forEach((s,i)=>{ if(s.getBoundingClientRect().top<=140) cur=i; });
+  if(innerHeight+scrollY>=document.documentElement.scrollHeight-4) cur=secs.length-1;
+  navLinks.forEach((a,i)=>a.classList.toggle('act',i===cur));
+}
+window.addEventListener('scroll',markNav,{passive:true}); markNav();
+render();
+</script>
+</body>
+</html>
